@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, check_branch ]
   pull_request:
     branches: [ master ]
 
@@ -22,11 +22,10 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
-            optional_args: "-pt"
+            optional_args: -pt
           - os: windows-latest
-            optional_args: "-pt --cmake_gen ninja"
-          - os: macOS-latest
-            optional_args: ""
+            optional_args: -pt --cmake_gen ninja
+          - os: macos-latest
     steps:
     - name: Checkout sources
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
