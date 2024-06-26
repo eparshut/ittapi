@@ -41,7 +41,7 @@ jobs:
         name: build-artifacts-${{ matrix.os }}
         path: |
           build*/**/bin
-          build*/fortran
+          build*/**/fortran
 
   create_release:
     permissions:
@@ -74,7 +74,7 @@ jobs:
         run: |
             zip -r ittapi_build_${{ github.ref_name }}.zip include &&
             cd build-artifacts &&
-            zip -rg ../ittapi_build_${{ github.ref_name }}.zip build*/**/bin build*/fortran &&
+            zip -rg ../ittapi_build_${{ github.ref_name }}.zip build*/**/bin build*/**/fortran &&
             cd -
       - name: Upload release asset
         id: upload-release-asset 
