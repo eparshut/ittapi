@@ -159,13 +159,13 @@ def main():
             return
 
         if sys.platform == 'win32':
-            generator_arch = 'x64' if bits == '64' else 'Win32'
             if vs_versions and args.cmake_gen != 'ninja':
                 generator = 'Visual Studio {}'.format(args.vs)
-                generator_args = '-A {}'.format(generator_arch)
+                generator_args = '-A {}'.format('x64' if bits ==
+                                                '64' else 'Win32')
             else:
                 generator = 'Ninja'
-                generator_args = '-DCMAKE_GENERATOR_PLATFORM={}'.format(generator_arch)
+                generator_args = ''
         else:
             generator = 'Unix Makefiles'
             generator_args = ''
