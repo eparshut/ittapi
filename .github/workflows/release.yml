@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
           name: build-artifacts-python-${{ matrix.os }}
-          path: python_dist/**
+          path: python_dist/
 
   create_release:
     permissions:
