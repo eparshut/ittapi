@@ -1,0 +1,213 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collection Control API &mdash; ITT/JIT API Documentation  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://eparshut.github.io/ittapi/src/ittapi/collection-control-api.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Context Metadata API" href="context-metadata-api.html" />
+    <link rel="prev" title="Clock Domain API" href="clock-domain-api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ITT/JIT API Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Build from Source</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api-support.html">API Usage and Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api-support.html#c-c-api-usage-and-reference">C/C++ API Usage and Reference:</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../itt-api-support.html">ITT API</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../itt-api-support.html#itt-api-usage-and-reference">ITT API Usage and Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../jit-api-support.html">JIT API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-support.html#other-language-api-bindings">Other Language API Bindings:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ref_collector.html">ITT API Reference Collector</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/intel/ittapi">GitHub Project</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ITT/JIT API Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api-support.html">API Usage and Reference</a></li>
+          <li class="breadcrumb-item"><a href="../itt-api-support.html">ITT API</a></li>
+          <li class="breadcrumb-item"><a href="../itt-api-reference.html">ITT API Reference</a></li>
+      <li class="breadcrumb-item active">Collection Control API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/src/ittapi/collection-control-api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="collection-control-api">
+<span id="id1"></span><h1>Collection Control API<a class="headerlink" href="#collection-control-api" title="Link to this heading"></a></h1>
+<p>You can use the collection control APIs in your code to control the way
+the Intel® VTune™ Profiler collects data for applications.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Use This Primitive</p></td>
+<td><p>To Do This</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_pause</span> <span class="pre">(void)</span></code></p></td>
+<td><p>Run the application without collecting data. VTune Profiler reduces the overhead of collection, by collecting only critical information, such as thread and process creation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_resume</span> <span class="pre">(void)</span></code></p></td>
+<td><p>Resume data collection. VTune Profiler resumes collecting all data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_detach</span> <span class="pre">(void)</span></code></p></td>
+<td><p>Detach data collection. VTune Profiler detaches all collectors from all processes. Your application continues to work but no data is collected for the running collection.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Pausing the data collection has the following effects:</p>
+<ul class="simple">
+<li><p>Data collection is paused for the whole program, not only within the
+current thread.</p></li>
+<li><p>Some runtime analysis overhead reduction.</p></li>
+<li><p>The following APIs are not affected by pausing the data collection:</p>
+<ul>
+<li><p>Domain API</p></li>
+<li><p>String Handle API</p></li>
+<li><p>Thread Naming API</p></li>
+</ul>
+</li>
+<li><p>The following APIs are affected by pausing the data collection. Data
+is not collected for these APIs while in paused state:</p>
+<ul>
+<li><p>Task API</p></li>
+<li><p>Frame API</p></li>
+<li><p>Event API</p></li>
+<li><p>User-Defined Synchronization API</p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Pause/Resume API call frequency is about 1Hz for a reasonable
+rate. Since this operation pauses and resumes data collection in all
+processes in the analysis run with the corresponding collection state
+notification to GUI, you are not recommended to call it on frequent
+basis for small workloads. For small workloads, consider using the
+<a class="reference external" href="frame-api.html">Frame
+APIs</a>.</p>
+</div>
+<section id="usage-example-focus-on-specific-code-section">
+<h2>Usage Example: Focus on Specific Code Section<a class="headerlink" href="#usage-example-focus-on-specific-code-section" title="Link to this heading"></a></h2>
+<p>The pause/resume calls shown in the following code snippet enable you to
+focus the collection on a specific section of code, and start the
+application run with collection paused.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Do initialization work here</span>
+<span class="w">  </span><span class="n">__itt_resume</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Do profiling work here</span>
+<span class="w">  </span><span class="n">__itt_pause</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// Do finalization work here</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="usage-example-hide-sections-of-code">
+<h2>Usage Example: Hide Sections of Code<a class="headerlink" href="#usage-example-hide-sections-of-code" title="Link to this heading"></a></h2>
+<p>The pause/resume calls shown in the following code snippet enable you to
+hide some intensive work that you are not currently focusing on:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Do work here</span>
+<span class="w">  </span><span class="n">__itt_pause</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// Do uninteresting work here</span>
+<span class="w">  </span><span class="n">__itt_resume</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// Do work here</span>
+<span class="w">  </span><span class="n">__itt_detach</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// Do uninteresting work here</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="clock-domain-api.html" class="btn btn-neutral float-left" title="Clock Domain API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="context-metadata-api.html" class="btn btn-neutral float-right" title="Context Metadata API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 Intel Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

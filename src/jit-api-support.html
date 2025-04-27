@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JIT API &mdash; ITT/JIT API Documentation  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://eparshut.github.io/ittapi/src/jit-api-support.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Using JIT API" href="using-jit-api.html" />
+    <link rel="prev" title="User-Defined Synchronization API" href="ittapi/user-defined-synchronization-api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ITT/JIT API Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build from Source</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api-support.html">API Usage and Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="api-support.html#c-c-api-usage-and-reference">C/C++ API Usage and Reference:</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="itt-api-support.html">ITT API</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">JIT API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#environment-variables-in-the-jit-profiling-api">Environment Variables in the JIT Profiling API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#profile-trace-based-and-method-based-jit-compiled-code">Profile Trace-based and Method-based JIT-compiled Code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analyze-split-functions">Analyze Split Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#explore-inline-functions">Explore Inline Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-support.html#other-language-api-bindings">Other Language API Bindings:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ref_collector.html">ITT API Reference Collector</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/intel/ittapi">GitHub Project</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ITT/JIT API Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api-support.html">API Usage and Reference</a></li>
+      <li class="breadcrumb-item active">JIT API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/src/jit-api-support.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jit-api">
+<span id="jit-api-support"></span><h1>JIT API<a class="headerlink" href="#jit-api" title="Link to this heading"></a></h1>
+<p>The JIT (Just-In-Time) Profiling API provides functionality to report
+information about just-in-time generated code that can be used by
+performance tools. You must insert JIT Profiling API calls in the code
+generator to report information before JIT-compiled code goes to
+execution. This information is collected at runtime and used by tools
+like Intel® VTune™ Profiler to display performance metrics associated
+with JIT-compiled code.</p>
+<p>You can use the JIT Profiling API to profile such environments as
+dynamic JIT compilation of JavaScript code traces, JIT execution in
+OpenCL™ applications, Java*/.NET* managed execution environments, and
+custom ISV JIT engines.</p>
+<p>The JIT engine generating code during runtime communicates with a profiler
+object (Collector) through the static part. During runtime, the JIT engine
+reports the information about JIT-compiled code stored in a trace file by
+the profiler object. After collection, profiling tool uses the generated
+trace file to resolve the JIT-compiled code.</p>
+<p>Use the JIT Profiling API to:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#profile-trace-based-and-method-based-jit-compiled-code"><span class="std std-ref">Profile Trace-based and Method-based JIT-compiled Code</span></a></p></li>
+<li><p><a class="reference internal" href="#analyze-split-functions"><span class="std std-ref">Analyze Split Functions</span></a></p></li>
+<li><p><a class="reference internal" href="#explore-inline-functions"><span class="std std-ref">Explore Inline Functions</span></a></p></li>
+</ul>
+<p>JIT profiling is supported with the <strong>Launch Application</strong> target option
+for event based sampling.</p>
+<section id="environment-variables-in-the-jit-profiling-api">
+<h2>Environment Variables in the JIT Profiling API<a class="headerlink" href="#environment-variables-in-the-jit-profiling-api" title="Link to this heading"></a></h2>
+<p>The JIT Profiling API contains two environment variables, which in turn
+contain paths to specific runtime libraries.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">INTEL_JIT_PROFILER32</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INTEL_JIT_PROFILER64</span></code></p></li>
+</ul>
+<p>These variables are used to signal the replacement of the stub
+implementation of the JIT API with the JIT API collector.
+Once you instrument your code with the JIT API and link it to the
+JIT API stub (<code class="docutils literal notranslate"><span class="pre">libjitprofiling.lib/libjitprofiling.a</span></code>), your code
+loads the libraries defined in these environment variables, once the
+variables are set.</p>
+<p>Make sure to set these environment variables for the ittnotify_collector
+to enable data collection:</p>
+<p>On Windows*:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">INTEL_JIT_PROFILER32</span><span class="o">=</span>&lt;install-dir&gt;<span class="se">\b</span>in32<span class="se">\r</span>untime<span class="se">\i</span>ttnotify_collector.dll
+<span class="nv">INTEL_JIT_PROFILER64</span><span class="o">=</span>&lt;install-dir&gt;<span class="se">\b</span>in64<span class="se">\r</span>untime<span class="se">\i</span>ttnotify_collector.dll
+</pre></div>
+</div>
+<p>On Linux*:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">INTEL_JIT_PROFILER32</span><span class="o">=</span>&lt;install-dir&gt;/lib32/runtime/libittnotify_collector.so
+<span class="nv">INTEL_JIT_PROFILER64</span><span class="o">=</span>&lt;install-dir&gt;/lib64/runtime/libittnotify_collector.so
+</pre></div>
+</div>
+<p>On FreeBSD*:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">INTEL_JIT_PROFILER64</span><span class="o">=</span>&lt;target-package&gt;/lib64/runtime/libittnotify_collector.so
+</pre></div>
+</div>
+</section>
+<section id="profile-trace-based-and-method-based-jit-compiled-code">
+<span id="id1"></span><h2>Profile Trace-based and Method-based JIT-compiled Code<a class="headerlink" href="#profile-trace-based-and-method-based-jit-compiled-code" title="Link to this heading"></a></h2>
+<p>This is the most common scenario for using JIT Profiling API to profile
+trace-based and method-based JIT-compiled code:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;jitprofiling.h&gt;</span>
+
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">iJIT_IsProfilingActive</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">iJIT_SAMPLING_ON</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">iJIT_Method_Load</span><span class="w"> </span><span class="n">jmethod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">jmethod</span><span class="p">.</span><span class="n">method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iJIT_GetNewMethodID</span><span class="p">();</span>
+<span class="n">jmethod</span><span class="p">.</span><span class="n">method_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;method_name&quot;</span><span class="p">;</span>
+<span class="n">jmethod</span><span class="p">.</span><span class="n">class_file_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;class_name&quot;</span><span class="p">;</span>
+<span class="n">jmethod</span><span class="p">.</span><span class="n">source_file_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;source_file_name&quot;</span><span class="p">;</span>
+<span class="n">jmethod</span><span class="p">.</span><span class="n">method_load_address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">code_addr</span><span class="p">;</span>
+<span class="n">jmethod</span><span class="p">.</span><span class="n">method_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">code_size</span><span class="p">;</span>
+
+
+<span class="n">iJIT_NotifyEvent</span><span class="p">(</span><span class="n">iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED</span><span class="p">,</span>
+<span class="w">      </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">jmethod</span><span class="p">);</span>
+<span class="n">iJIT_NotifyEvent</span><span class="p">(</span><span class="n">iJVM_EVENT_TYPE_SHUTDOWN</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Usage Tips</strong></p>
+<ul class="simple">
+<li><p>If any <code class="docutils literal notranslate"><span class="pre">iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED</span></code> event overwrites an
+already reported method, then such a method becomes invalid and its
+memory region is treated as unloaded.</p></li>
+<li><p>If supplied line number information contains multiple source lines
+for the same assembly instruction (code location), then profiling
+tool picks up the first line number.</p></li>
+<li><p>Dynamically generated code can be associated with a module name. Use
+the <code class="docutils literal notranslate"><span class="pre">iJIT_Method_Load_V2</span></code> structure.</p></li>
+<li><p>If you register a function with the same method ID multiple times,
+specifying different module names, then profiling tool picks
+up the module name registered first. If you want to distinguish
+the same function between different JIT engines, supply different
+method IDs for each function. Other symbolic information (for
+example, source file) can be identical.</p></li>
+</ul>
+</section>
+<section id="analyze-split-functions">
+<span id="id2"></span><h2>Analyze Split Functions<a class="headerlink" href="#analyze-split-functions" title="Link to this heading"></a></h2>
+<p>You can use the JIT Profiling API to analyze split functions (multiple
+joint or disjoint code regions belonging to the same function) including
+re-JITting with potential overlapping of code regions in time, which is
+common in resource-limited environments.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;jitprofiling.h&gt;</span>
+
+
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iJIT_GetNewMethodID</span><span class="p">();</span>
+
+
+<span class="n">iJIT_Method_Load</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">a</span><span class="p">.</span><span class="n">method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_id</span><span class="p">;</span>
+<span class="n">a</span><span class="p">.</span><span class="n">method_load_address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x100</span><span class="p">;</span>
+<span class="n">a</span><span class="p">.</span><span class="n">method_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x20</span><span class="p">;</span>
+
+
+<span class="n">iJIT_Method_Load</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">b</span><span class="p">.</span><span class="n">method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_id</span><span class="p">;</span>
+<span class="n">b</span><span class="p">.</span><span class="n">method_load_address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x200</span><span class="p">;</span>
+<span class="n">b</span><span class="p">.</span><span class="n">method_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x30</span><span class="p">;</span>
+
+
+<span class="n">iJIT_NotifyEvent</span><span class="p">(</span><span class="n">iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+<span class="n">iJIT_NotifyEvent</span><span class="p">(</span><span class="n">iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Usage Tips</strong></p>
+<ul class="simple">
+<li><p>If a <code class="docutils literal notranslate"><span class="pre">iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED</span></code> event overwrites an
+already reported method, then such a method becomes invalid and its
+memory region is treated as unloaded.</p></li>
+<li><p>All code regions reported with the same method ID are considered as
+belonging to the same method. Symbolic information (method name,
+source file name) will be taken from the first notification, and all
+subsequent notifications with the same method ID will be processed
+only for line number table information.</p></li>
+<li><p>If you register a second code region with a different source file
+name and the same method ID, this information will be saved and
+will not be considered as an extension of the first code region,
+but profiling tool will use the source file of the first code
+region and map performance metrics incorrectly.</p></li>
+<li><p>If you register a second code region with the same source file as
+for the first region and the same method ID, the source file will
+be discarded but profiling tool will map metrics to the source
+file correctly.</p></li>
+<li><p>If you register a second code region with a null source file and
+the same method ID, provided line number info will be associated
+with the source file of the first code region.</p></li>
+</ul>
+</section>
+<section id="explore-inline-functions">
+<span id="id3"></span><h2>Explore Inline Functions<a class="headerlink" href="#explore-inline-functions" title="Link to this heading"></a></h2>
+<p>You can use the JIT Profiling API to explore inline functions including
+multi-level hierarchy of nested inline methods that shows how
+performance metrics are distributed through them.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;jitprofiling.h&gt;</span>
+
+
+<span class="w">  </span><span class="c1">//                                    method_id   parent_id</span>
+<span class="w">  </span><span class="c1">//   [-- c --]                          3000        2000</span>
+<span class="w">  </span><span class="c1">//                  [---- d -----]      2001        1000</span>
+<span class="w">  </span><span class="c1">//  [---- b ----]                       2000        1000</span>
+<span class="w">  </span><span class="c1">// [------------ a ----------------]    1000         n/a</span>
+
+
+<span class="n">iJIT_Method_Load</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">a</span><span class="p">.</span><span class="n">method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+
+
+<span class="n">iJIT_Method_Inline_Load</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">b</span><span class="p">.</span><span class="n">method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2000</span><span class="p">;</span>
+<span class="n">b</span><span class="p">.</span><span class="n">parent_method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+
+
+<span class="n">iJIT_Method_Inline_Load</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">c</span><span class="p">.</span><span class="n">method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3000</span><span class="p">;</span>
+<span class="n">c</span><span class="p">.</span><span class="n">parent_method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2000</span><span class="p">;</span>
+
+
+<span class="n">iJIT_Method_Inline_Load</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">d</span><span class="p">.</span><span class="n">method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2001</span><span class="p">;</span>
+<span class="n">d</span><span class="p">.</span><span class="n">parent_method_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+
+
+<span class="n">iJIT_NotifyEvent</span><span class="p">(</span><span class="n">iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+<span class="n">iJIT_NotifyEvent</span><span class="p">(</span><span class="n">iJVM_EVENT_TYPE_METHOD_INLINE_LOAD_FINISHED</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">b</span><span class="p">);</span>
+<span class="n">iJIT_NotifyEvent</span><span class="p">(</span><span class="n">iJVM_EVENT_TYPE_METHOD_INLINE_LOAD_FINISHED</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">c</span><span class="p">);</span>
+<span class="n">iJIT_NotifyEvent</span><span class="p">(</span><span class="n">iJVM_EVENT_TYPE_METHOD_INLINE_LOAD_FINISHED</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">d</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Usage Tips</strong></p>
+<ul class="simple">
+<li><p>Each inline (<code class="docutils literal notranslate"><span class="pre">iJIT_Method_Inline_Load</span></code>) method should be associated
+with two method IDs: one for itself; one for its immediate parent.</p></li>
+<li><p>Address regions of inline methods of the same parent method cannot
+overlap each other.</p></li>
+<li><p>Execution of the parent method must not be started until it and all
+its inline methods are reported.</p></li>
+<li><p>In case of nested inline methods an order of
+<code class="docutils literal notranslate"><span class="pre">iJVM_EVENT_TYPE_METHOD_INLINE_LOAD_FINISHED</span></code> events is not
+important.</p></li>
+<li><p>If any event overwrites either inline method or top parent method,
+then the parent, including inline methods, becomes invalid and its
+memory region is treated as unloaded.</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using-jit-api.html">Using JIT API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jit-api-reference.html">JIT API Reference</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ittapi/user-defined-synchronization-api.html" class="btn btn-neutral float-left" title="User-Defined Synchronization API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="using-jit-api.html" class="btn btn-neutral float-right" title="Using JIT API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 Intel Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

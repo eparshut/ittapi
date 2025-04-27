@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User-Defined Synchronization API &mdash; ITT/JIT API Documentation  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://eparshut.github.io/ittapi/src/ittapi/user-defined-synchronization-api.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="JIT API" href="../jit-api-support.html" />
+    <link rel="prev" title="Thread Naming API" href="thread-naming-api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ITT/JIT API Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Build from Source</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api-support.html">API Usage and Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api-support.html#c-c-api-usage-and-reference">C/C++ API Usage and Reference:</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../itt-api-support.html">ITT API</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../itt-api-support.html#itt-api-usage-and-reference">ITT API Usage and Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../jit-api-support.html">JIT API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-support.html#other-language-api-bindings">Other Language API Bindings:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ref_collector.html">ITT API Reference Collector</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/intel/ittapi">GitHub Project</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ITT/JIT API Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api-support.html">API Usage and Reference</a></li>
+          <li class="breadcrumb-item"><a href="../itt-api-support.html">ITT API</a></li>
+          <li class="breadcrumb-item"><a href="../itt-api-reference.html">ITT API Reference</a></li>
+      <li class="breadcrumb-item active">User-Defined Synchronization API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/src/ittapi/user-defined-synchronization-api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="user-defined-synchronization-api">
+<span id="id1"></span><h1>User-Defined Synchronization API<a class="headerlink" href="#user-defined-synchronization-api" title="Link to this heading"></a></h1>
+<p>While the Intel® VTune™ Profiler supports a significant portion of the
+Windows* OS and POSIX* APIs, it is often useful for you to define your
+own synchronization constructs. Any specially built constructs that you
+create are not normally tracked by the VTune Profiler. However, the
+VTune Profiler includes the synchronization API to help you gather
+statistical information related to user-defined synchronization
+constructs.</p>
+<p>The User-Defined Synchronization API is a per-thread function that works
+in resumed state. This function does not work in paused state.</p>
+<p>Synchronization constructs may generally be modeled as a series of
+signals. One thread or many threads may wait for a signal from another
+group of threads telling them they may proceed with some action. By
+tracking when a thread begins waiting for a signal, and then noting when
+the signal occurs, the synchronization API can take a user-defined
+synchronization object and give you an understanding of your code. The
+API uses memory handles along with a set of primitives to gather
+statistics on the user-defined synchronization object.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The User-Defined Synchronization API works with the <strong>Threading</strong>
+analysis type.</p>
+</div>
+<ul class="simple">
+<li><p><a class="reference external" href="#USING_USER-DEFINED_SYNC">Using User-Defined Synchronization API in Your
+Code</a></p></li>
+<li><p><a class="reference external" href="#EXAMPLE_USER-DEFINED_SPIN-WAITS">Usage Example: User-Defined
+Spin-Waits</a></p></li>
+<li><p><a class="reference external" href="#EXAMPLE_USER-DEFINED_CRITICAL_SECTION">Usage Example: User-Defined Synchronized Critical
+Section</a></p></li>
+<li><p><a class="reference external" href="#EXAMPLE_SYNCHRONIZED_BARRIER">Usage Example: User-Level Synchronized
+Barrier</a></p></li>
+</ul>
+<section id="using-user-defined-synchronization-api-in-your-code">
+<h2>Using User-Defined Synchronization API in Your Code<a class="headerlink" href="#using-user-defined-synchronization-api-in-your-code" title="Link to this heading"></a></h2>
+<p>The following table describes the user-defined synchronization API
+primitives, available for use on Windows* and Linux* operating
+systems:</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Use This Primitive</p></td>
+<td><p>To Do This</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_sync_create</span> <span class="pre">(void</span> <span class="pre">*addr,</span> <span class="pre">const</span> <span class="pre">__itt_char</span> <span class="pre">*objtype,</span> <span class="pre">const</span> <span class="pre">__itt_char</span> <span class="pre">*objname,</span> <span class="pre">int</span> <span class="pre">attribute)</span></code></p></td>
+<td><p>Register the creation of a sync object using char or Unicode string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_sync_rename</span> <span class="pre">(void</span> <span class="pre">*addr,</span> <span class="pre">const</span> <span class="pre">__itt_char</span> <span class="pre">*name)</span></code></p></td>
+<td><p>Assign a name to a sync object using char or Unicode string, after it was created.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_sync_destroy</span> <span class="pre">(void</span> <span class="pre">*addr)</span></code></p></td>
+<td><p>Track lifetime of the destroyed object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_sync_prepare</span> <span class="pre">(void</span> <span class="pre">*addr)</span></code></p></td>
+<td><p>Enter spin loop on user-defined sync object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_sync_cancel</span> <span class="pre">(void</span> <span class="pre">*addr)</span></code></p></td>
+<td><p>Quit spin loop without acquiring spin object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_sync_acquired</span> <span class="pre">(void</span> <span class="pre">*addr)</span></code></p></td>
+<td><p>Define successful spin loop completion (sync object acquired).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">__itt_sync_releasing</span> <span class="pre">(void</span> <span class="pre">*addr)</span></code></p></td>
+<td><p>Start sync object releasing code. This primitive is called before the lock release call.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Each API call has a single parameter, addr. The address, not the value,
+is used to differentiate between two or more distinct custom
+synchronization objects. Each unique address enables the VTune Profiler
+to track a separate custom object. Therefore, to use the same custom
+object to protect access in different parts of your code, use the same
+addr parameter around each.</p>
+<p>When properly embedded in your code, the primitives tell the VTune
+Profiler when the code is attempting to perform some type of
+synchronization. Each prepare primitive must be paired with a cancel or
+acquired primitive.</p>
+<p>Each user-defined synchronization construct may involve any number of
+synchronization objects. Each synchronization object must be triggered
+off of a unique memory handle, which the user-defined synchronization
+API uses to track the object. Any number of synchronization objects may
+be tracked at one time using the user-defined synchronization API, as
+long as each object uses a unique memory pointer. You can think of this
+as modeling objects similar to the WaitForMultipleObjects function in
+the Windows* OS API. You can create more complex synchronization
+constructs out of a group of synchronization objects; however, it is not
+advisable to interlace different user-defined synchronization constructs
+as this results in incorrect behavior.</p>
+</section>
+<section id="api-usage-tips">
+<h2>API Usage Tips<a class="headerlink" href="#api-usage-tips" title="Link to this heading"></a></h2>
+<p>The user-defined synchronization API requires proper placement of the
+primitives within your code. Appropriate usage of the user-defined
+synchronization API can be accomplished by following these guidelines:</p>
+<ul class="simple">
+<li><p>Put a prepare primitive immediately before the code that attempts to
+obtain access to a synchronization object.</p></li>
+<li><p>Put either a cancel primitive or an acquired primitive immediately
+after your code is no longer waiting for a synchronization object.</p></li>
+<li><p>The releasing primitive should be used immediately before the code
+signals that it no longer holds a synchronization object.</p></li>
+<li><p>When using multiple prepare primitives to simulate any construct that
+waits for multiple objects, the last individual cancel or acquired
+primitive on an object related to the group of prepare primitives
+determines if the behavior of the construct is a cancel or acquired
+respectively.</p></li>
+<li><p>The time between a prepare primitive and an acquired primitive may be
+considered impact time</p></li>
+<li><p>The time between a prepare primitive and a cancel primitive is
+considered blocking time, even though the processor does not
+necessarily block.</p></li>
+<li><p>Improper use of the user-defined synchronization API results in
+incorrect statistical data.</p></li>
+</ul>
+</section>
+<section id="usage-example-user-defined-spin-waits">
+<h2>Usage Example: User-Defined Spin-Waits<a class="headerlink" href="#usage-example-user-defined-spin-waits" title="Link to this heading"></a></h2>
+<p>The prepare API indicates to the VTune Profiler that the current thread
+is about to begin waiting for a signal on a memory location. This call
+must occur before you invoke the user synchronization construct. The
+prepare API must always be paired with a call to either the acquired or
+cancel API.</p>
+<p>The following code snippet shows the use of the prepare and acquired API
+used in conjunction with a user-defined spin-wait construct:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">long</span><span class="w"> </span><span class="n">spin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span>
+<span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span>
+<span class="n">__itt_sync_prepare</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">spin</span><span class="w"> </span><span class="p">);</span>
+<span class="k">while</span><span class="p">(</span><span class="n">ResourceBusy</span><span class="p">);</span>
+<span class="c1">// spin wait;</span>
+<span class="n">__itt_sync_acquired</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">spin</span><span class="w"> </span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Using the cancel API may be applicable to other scenarios where the
+current thread tests the user synchronization construct and decides to
+do something useful instead of waiting for a signal from another thread.
+See the following code example:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">long</span><span class="w"> </span><span class="n">spin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span>
+<span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span>
+<span class="n">__itt_sync_prepare</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">spin</span><span class="w"> </span><span class="p">);</span>
+<span class="k">while</span><span class="p">(</span><span class="n">ResourceBusy</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">__itt_sync_cancel</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">spin</span><span class="w"> </span><span class="p">);</span>
+
+
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// Do useful work</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span>
+<span class="w">    </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">//  Once done with the useful work, this construct will test the</span>
+<span class="w">    </span><span class="c1">//  lock variable and try to acquire it again. Before this can</span>
+<span class="w">    </span><span class="c1">//  be done, a call to the prepare API is required.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">__itt_sync_prepare</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">spin</span><span class="w"> </span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">__itt_sync_acquired</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">spin</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>After you acquire a lock, you must call the releasing API before the
+current thread releases the lock. The following example shows how to use
+the releasing API:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">long</span><span class="w"> </span><span class="n">spin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span>
+<span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="p">.</span>
+<span class="n">__itt_sync_releasing</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">spin</span><span class="w"> </span><span class="p">);</span>
+<span class="c1">// Code here should free the resource</span>
+</pre></div>
+</div>
+</section>
+<section id="usage-example-user-defined-synchronized-critical-section">
+<h2>Usage Example: User-Defined Synchronized Critical Section<a class="headerlink" href="#usage-example-user-defined-synchronized-critical-section" title="Link to this heading"></a></h2>
+<p>The following code snippet shows how to create a critical section
+construct that can be tracked using the user-defined synchronization
+API:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">CSEnter</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">__itt_sync_prepare</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cs</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">LockIsUsed</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">LockIsFree</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Code to actually acquire the lock goes here</span>
+<span class="w">    </span><span class="n">__itt_sync_acquired</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cs</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">    </span><span class="n">__itt_sync_cancel</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cs</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="n">CSLeave</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">if</span><span class="p">(</span><span class="n">LockIsMine</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">__itt_sync_releasing</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cs</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Code to actually release the lock goes here</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This simple critical section example demonstrates how to use the
+user-defined synchronization primitives. When looking at this example,
+note the following points:</p>
+<ul class="simple">
+<li><p>Each prepare primitive is paired with an acquired primitive or a
+cancel primitive.</p></li>
+<li><p>The prepare primitive is placed immediately before the user code
+begins waiting for the user lock.</p></li>
+<li><p>The acquired primitive is placed immediately after the user code
+actually obtains the user lock.</p></li>
+<li><p>The releasing primitive is placed before the user code actually
+releases the user lock. This ensures that another thread does not
+call the acquired primitive before the VTune Profiler realizes that
+this thread has released the lock.</p></li>
+</ul>
+</section>
+<section id="usage-example-user-level-synchronized-barrier">
+<h2>Usage Example: User-Level Synchronized Barrier<a class="headerlink" href="#usage-example-user-level-synchronized-barrier" title="Link to this heading"></a></h2>
+<p>Higher level constructs, such as barriers, are also easy to model using
+the synchronization API. The following code snippet shows how to create
+a barrier construct that can be tracked using the synchronization API:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Barrier</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">teamflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">__itt_sync_releasing</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">counter</span><span class="p">);</span>
+<span class="w">    </span><span class="n">InterlockedIncrement</span><span class="p">(</span><span class="o">&amp;</span><span class="n">counter</span><span class="p">);</span><span class="w">  </span><span class="c1">// use the atomic increment primitive appropriate to your OS and compiler</span>
+
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kr">thread</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">__itt_sync_acquired</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">counter</span><span class="p">);</span>
+<span class="w">        </span><span class="n">__itt_sync_releasing</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">teamflag</span><span class="p">);</span>
+<span class="w">        </span><span class="n">teamflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">__</span><span class="w"> </span><span class="nf">itt_sync_prepare</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">teamflag</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">team</span><span class="w"> </span><span class="n">flag</span>
+<span class="w">        </span><span class="n">__</span><span class="w"> </span><span class="n">itt_sync_acquired</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">teamflag</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When looking at this example, note the following points:</p>
+<ul class="simple">
+<li><p>There are two synchronization objects in this barrier code. The
+counter object is used to do a gather-like signaling from all the
+threads to the final thread indicating that each thread has entered
+the barrier. Once the last thread hits the barrier it uses the
+teamflag object to signal all the other threads that they may
+proceed.</p></li>
+<li><p>As each thread enters the barrier it calls __itt_sync_releasing to
+tell the VTune Profiler that it is about to signal the last thread by
+incrementing counter</p></li>
+<li><p>The last thread to enter the barrier calls __itt_sync_acquired to
+tell the VTune Profiler that it was successfully signaled by all the
+other threads.</p></li>
+<li><p>The last thread to enter the barrier calls __itt_sync_releasing to
+tell the VTune Profiler that it is going to signal the barrier
+completion to all the other threads by setting teamflag</p></li>
+<li><p>Each thread, except the last, calls the __itt_sync_prepare primitive
+to tell the VTune Profiler that it is about to start waiting for the
+teamflag signal from the last thread.</p></li>
+<li><p>Finally, before leaving the barrier, each thread calls the
+__itt_sync_acquired primitive to tell the VTune Profiler that it
+successfully received the end-of-barrier signal.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="thread-naming-api.html" class="btn btn-neutral float-left" title="Thread Naming API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../jit-api-support.html" class="btn btn-neutral float-right" title="JIT API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 Intel Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
