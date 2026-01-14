@@ -4,5 +4,3 @@ updates:
     directory: /
     schedule:
       interval: daily
-    # Disable the steady stream of version updates for actions; only notify about security updates.
-    open-pull-requests-limit: 0
