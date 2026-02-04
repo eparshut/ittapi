@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ fix ]
+    branches: [ fix_release ]
   pull_request:
     branches: [ master ]
 
