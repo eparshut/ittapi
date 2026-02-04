@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ fix ]
   pull_request:
     branches: [ master ]
 
@@ -37,7 +37,7 @@ jobs:
       # 2. Disable PT support for MacOS since we have x86 specific assembly instructions
       # 3. Switch to use Ninja CMake Generator for Windows since setup-fortran action
       #    doesn't work in case of CMake + VS (https://github.com/fortran-lang/setup-fortran/issues/45)
-      run: python buildall.py --force_bits 64 -ft ${{ matrix.optional_args }}
+      run: python buildall.py -ft ${{ matrix.optional_args }}
 
   rust_format:
     name: Check Rust formatting
