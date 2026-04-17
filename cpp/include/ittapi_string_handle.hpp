@@ -39,6 +39,22 @@ public:
         return m_handle != nullptr;
     }
 
+    StringHandle(const StringHandle&) = default;
+    StringHandle& operator=(const StringHandle&) = default;
+
+    StringHandle(StringHandle&& other) noexcept
+        : m_handle(other.m_handle)
+    {
+        other.m_handle = nullptr;
+    }
+
+    StringHandle& operator=(StringHandle&& other) noexcept
+    {
+        m_handle = other.m_handle;
+        other.m_handle = nullptr;
+        return *this;
+    }
+
 private:
     __itt_string_handle* m_handle = nullptr;
 };

@@ -43,34 +43,50 @@ public:
         return m_handle != nullptr;
     }
 
-    ScopedTask task(std::string_view name) const
+    Domain(const Domain&) = default;
+    Domain& operator=(const Domain&) = default;
+
+    Domain(Domain&& other) noexcept
+        : m_handle(other.m_handle)
+    {
+        other.m_handle = nullptr;
+    }
+
+    Domain& operator=(Domain&& other) noexcept
+    {
+        m_handle = other.m_handle;
+        other.m_handle = nullptr;
+        return *this;
+    }
+
+    [[nodiscard]] ScopedTask task(std::string_view name) const
     {
         return ScopedTask(m_handle, name);
     }
 
-    ScopedTask task(std::string_view name, __itt_id taskid, __itt_id parentid) const
+    [[nodiscard]] ScopedTask task(std::string_view name, __itt_id taskid, __itt_id parentid) const
     {
         return ScopedTask(m_handle, name, taskid, parentid);
     }
 
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
-    ScopedTask task(std::wstring_view name) const
+    [[nodiscard]] ScopedTask task(std::wstring_view name) const
     {
         return ScopedTask(m_handle, name);
     }
 
-    ScopedTask task(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
+    [[nodiscard]] ScopedTask task(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
     {
         return ScopedTask(m_handle, name, taskid, parentid);
     }
 #endif
 
-    ScopedTask task(const StringHandle& name) const noexcept
+    [[nodiscard]] ScopedTask task(const StringHandle& name) const noexcept
     {
         return ScopedTask(m_handle, name);
     }
 
-    ScopedTask task(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept
+    [[nodiscard]] ScopedTask task(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept
     {
         return ScopedTask(m_handle, name, taskid, parentid);
     }
@@ -116,39 +132,39 @@ public:
         __itt_task_end(m_handle);
     }
 
-    ScopedRegion region(std::string_view name) const
+    [[nodiscard]] ScopedRegion region(std::string_view name) const
     {
         return ScopedRegion(m_handle, name);
     }
 
-    ScopedRegion region(std::string_view name, __itt_id id, __itt_id parentid) const
+    [[nodiscard]] ScopedRegion region(std::string_view name, __itt_id id, __itt_id parentid) const
     {
         return ScopedRegion(m_handle, name, id, parentid);
     }
 
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
-    ScopedRegion region(std::wstring_view name) const
+    [[nodiscard]] ScopedRegion region(std::wstring_view name) const
     {
         return ScopedRegion(m_handle, name);
     }
 
-    ScopedRegion region(std::wstring_view name, __itt_id id, __itt_id parentid) const
+    [[nodiscard]] ScopedRegion region(std::wstring_view name, __itt_id id, __itt_id parentid) const
     {
         return ScopedRegion(m_handle, name, id, parentid);
     }
 #endif
 
-    ScopedRegion region(const StringHandle& name) const noexcept
+    [[nodiscard]] ScopedRegion region(const StringHandle& name) const noexcept
     {
         return ScopedRegion(m_handle, name);
     }
 
-    ScopedRegion region(const StringHandle& name, __itt_id id, __itt_id parentid) const noexcept
+    [[nodiscard]] ScopedRegion region(const StringHandle& name, __itt_id id, __itt_id parentid) const noexcept
     {
         return ScopedRegion(m_handle, name, id, parentid);
     }
 
-    ScopedFrame frame() const noexcept
+    [[nodiscard]] ScopedFrame frame() const noexcept
     {
         return ScopedFrame(m_handle);
     }
