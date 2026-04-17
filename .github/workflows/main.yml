@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master, cpp_wrapper ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
