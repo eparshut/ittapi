@@ -1,0 +1,118 @@
+/*
+  Copyright (C) 2026 Intel Corporation
+  SPDX-License-Identifier: (BSD-3-Clause OR GPL-2.0-only)
+*/
+
+#include <ittapi_domain.hpp>
+#include <ittapi_task.hpp>
+
+#include <cassert>
+#include <utility>
+
+static void test_scoped_task_lifecycle()
+{
+    ittapi::Domain d{"test.task.lifecycle"};
+
+    {
+        auto task = d.task("lifecycle_task");
+        assert(task.active());
+    }
+    // destructor should have ended the task
+}
+
+static void test_explicit_end_is_idempotent()
+{
+    ittapi::Domain d{"test.task.end"};
+    auto task = d.task("end_task");
+    assert(task.active());
+    task.end();
+    assert(!task.active());
+    task.end();  // second call should be safe
+    assert(!task.active());
+}
+
+static void test_move_construction()
+{
+    ittapi::Domain d{"test.task.move"};
+    auto task1 = d.task("move_task");
+    assert(task1.active());
+
+    auto task2 = std::move(task1);
+    assert(!task1.active());
+    assert(task2.active());
+}
+
+static void test_string_handle_overload()
+{
+    ittapi::Domain d{"test.task.sh"};
+    ittapi::StringHandle name{"sh_task"};
+
+    {
+        auto task = d.task(name);
+        assert(task.active());
+    }
+}
+
+static void test_manual_task_begin_end()
+{
+    ittapi::Domain d{"test.task.manual"};
+    d.task_begin("manual_task");
+    d.task_end();
+}
+
+static void test_manual_task_begin_end_string_handle()
+{
+    ittapi::Domain d{"test.task.manual_sh"};
+    ittapi::StringHandle name{"manual_sh_task"};
+    d.task_begin(name);
+    d.task_end();
+}
+
+static void test_scoped_task_with_ids()
+{
+    ittapi::Domain d{"test.task.ids"};
+    __itt_id taskid = __itt_id_make(nullptr, 1);
+    __itt_id parentid = __itt_null;
+
+    {
+        auto task = d.task("task_with_ids", taskid, parentid);
+        assert(task.active());
+    }
+}
+
+static void test_scoped_task_with_ids_string_handle()
+{
+    ittapi::Domain d{"test.task.ids_sh"};
+    ittapi::StringHandle name{"sh_task_ids"};
+    __itt_id taskid = __itt_id_make(nullptr, 2);
+    __itt_id parentid = __itt_null;
+
+    {
+        auto task = d.task(name, taskid, parentid);
+        assert(task.active());
+    }
+}
+
+static void test_manual_task_begin_end_with_ids()
+{
+    ittapi::Domain d{"test.task.manual_ids"};
+    __itt_id taskid = __itt_id_make(nullptr, 3);
+    __itt_id parentid = __itt_null;
+
+    d.task_begin("manual_ids_task", taskid, parentid);
+    d.task_end();
+}
+
+int main()
+{
+    test_scoped_task_lifecycle();
+    test_explicit_end_is_idempotent();
+    test_move_construction();
+    test_string_handle_overload();
+    test_manual_task_begin_end();
+    test_manual_task_begin_end_string_handle();
+    test_scoped_task_with_ids();
+    test_scoped_task_with_ids_string_handle();
+    test_manual_task_begin_end_with_ids();
+    return 0;
+}
