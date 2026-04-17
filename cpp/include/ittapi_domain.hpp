@@ -48,6 +48,13 @@ public:
         return ScopedTask(m_handle, name);
     }
 
+#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    ScopedTask task(std::wstring_view name) const
+    {
+        return ScopedTask(m_handle, name);
+    }
+#endif
+
     ScopedTask task(const StringHandle& name) const noexcept
     {
         return ScopedTask(m_handle, name);
@@ -58,6 +65,14 @@ public:
         __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
         __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), h);
     }
+
+#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    void task_begin(std::wstring_view name) const
+    {
+        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), h);
+    }
+#endif
 
     void task_begin(const StringHandle& name) const noexcept
     {
@@ -73,6 +88,13 @@ public:
     {
         return ScopedRegion(m_handle, name);
     }
+
+#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    ScopedRegion region(std::wstring_view name) const
+    {
+        return ScopedRegion(m_handle, name);
+    }
+#endif
 
     ScopedRegion region(const StringHandle& name) const noexcept
     {

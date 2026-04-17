@@ -29,6 +29,17 @@ public:
         __itt_region_begin(m_domain, m_id, detail::make_null_id(), h);
     }
 
+#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    ScopedRegion(const __itt_domain* domain, std::wstring_view name)
+        : m_domain(domain)
+        , m_id(detail::make_null_id())
+        , m_active(true)
+    {
+        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_region_begin(m_domain, m_id, detail::make_null_id(), h);
+    }
+#endif
+
     ScopedRegion(const __itt_domain* domain, const StringHandle& name) noexcept
         : m_domain(domain)
         , m_id(detail::make_null_id())
@@ -39,6 +50,7 @@ public:
 
     ScopedRegion(const ScopedRegion&) = delete;
     ScopedRegion& operator=(const ScopedRegion&) = delete;
+    ScopedRegion& operator=(ScopedRegion&&) = delete;
 
     ScopedRegion(ScopedRegion&& other) noexcept
         : m_domain(other.m_domain)
@@ -46,19 +58,6 @@ public:
         , m_active(other.m_active)
     {
         other.m_active = false;
-    }
-
-    ScopedRegion& operator=(ScopedRegion&& other) noexcept
-    {
-        if (this != &other)
-        {
-            end();
-            m_domain = other.m_domain;
-            m_id = other.m_id;
-            m_active = other.m_active;
-            other.m_active = false;
-        }
-        return *this;
     }
 
     ~ScopedRegion() noexcept

@@ -28,6 +28,16 @@ public:
         __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), h);
     }
 
+#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    ScopedTask(const __itt_domain* domain, std::wstring_view name)
+        : m_domain(domain)
+        , m_active(true)
+    {
+        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), h);
+    }
+#endif
+
     ScopedTask(const __itt_domain* domain, const StringHandle& name) noexcept
         : m_domain(domain)
         , m_active(true)
@@ -37,24 +47,13 @@ public:
 
     ScopedTask(const ScopedTask&) = delete;
     ScopedTask& operator=(const ScopedTask&) = delete;
+    ScopedTask& operator=(ScopedTask&&) = delete;
 
     ScopedTask(ScopedTask&& other) noexcept
         : m_domain(other.m_domain)
         , m_active(other.m_active)
     {
         other.m_active = false;
-    }
-
-    ScopedTask& operator=(ScopedTask&& other) noexcept
-    {
-        if (this != &other)
-        {
-            end();
-            m_domain = other.m_domain;
-            m_active = other.m_active;
-            other.m_active = false;
-        }
-        return *this;
     }
 
     ~ScopedTask() noexcept

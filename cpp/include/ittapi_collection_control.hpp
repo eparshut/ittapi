@@ -32,25 +32,12 @@ public:
 
     ScopedPause(const ScopedPause&) = delete;
     ScopedPause& operator=(const ScopedPause&) = delete;
+    ScopedPause& operator=(ScopedPause&&) = delete;
 
     ScopedPause(ScopedPause&& other) noexcept
         : m_active(other.m_active)
     {
         other.m_active = false;
-    }
-
-    ScopedPause& operator=(ScopedPause&& other) noexcept
-    {
-        if (this != &other)
-        {
-            if (m_active)
-            {
-                __itt_resume();
-            }
-            m_active = other.m_active;
-            other.m_active = false;
-        }
-        return *this;
     }
 
     ~ScopedPause() noexcept

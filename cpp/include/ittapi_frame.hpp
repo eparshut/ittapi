@@ -26,6 +26,7 @@ public:
 
     ScopedFrame(const ScopedFrame&) = delete;
     ScopedFrame& operator=(const ScopedFrame&) = delete;
+    ScopedFrame& operator=(ScopedFrame&&) = delete;
 
     ScopedFrame(ScopedFrame&& other) noexcept
         : m_domain(other.m_domain)
@@ -33,19 +34,6 @@ public:
         , m_active(other.m_active)
     {
         other.m_active = false;
-    }
-
-    ScopedFrame& operator=(ScopedFrame&& other) noexcept
-    {
-        if (this != &other)
-        {
-            end();
-            m_domain = other.m_domain;
-            m_id = other.m_id;
-            m_active = other.m_active;
-            other.m_active = false;
-        }
-        return *this;
     }
 
     ~ScopedFrame() noexcept
