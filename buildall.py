@@ -118,7 +118,7 @@ def main():
     parser.add_argument(
         "-ft", "--fortran", help="enable fortran support", action="store_true")
     parser.add_argument(
-        "--cpp", help="enable C++ wrapper support", action="store_true")
+        "-cpp", "--cpp", help="enable C++ wrapper support", action="store_true")
     parser.add_argument(
         "--force_bits", choices=["32", "64"], help="specify bit version for the target")
     if sys.platform == 'win32' and vs_versions:
