@@ -41,7 +41,7 @@ To build the library:
 - To list available build options execute: `python buildall.py -h`
 
 ```
-usage: buildall.py [-h] [-d] [-c] [-v] [-pt] [-ft] [--cpp] [--force_bits]
+usage: buildall.py [-h] [-d] [-c] [-v] [-pt] [-ft] [-cpp] [--force_bits]
 
 optional arguments:
   -h, --help      show this help message and exit
