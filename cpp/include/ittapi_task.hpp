@@ -28,6 +28,15 @@ public:
         __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), h);
     }
 
+    ScopedTask(const __itt_domain* domain, std::string_view name,
+               __itt_id taskid, __itt_id parentid)
+        : m_domain(domain)
+        , m_active(true)
+    {
+        __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
+        __itt_task_begin(m_domain, taskid, parentid, h);
+    }
+
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
     ScopedTask(const __itt_domain* domain, std::wstring_view name)
         : m_domain(domain)
@@ -36,6 +45,15 @@ public:
         __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
         __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), h);
     }
+
+    ScopedTask(const __itt_domain* domain, std::wstring_view name,
+               __itt_id taskid, __itt_id parentid)
+        : m_domain(domain)
+        , m_active(true)
+    {
+        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_task_begin(m_domain, taskid, parentid, h);
+    }
 #endif
 
     ScopedTask(const __itt_domain* domain, const StringHandle& name) noexcept
@@ -43,6 +61,14 @@ public:
         , m_active(true)
     {
         __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), name.native_handle());
+    }
+
+    ScopedTask(const __itt_domain* domain, const StringHandle& name,
+               __itt_id taskid, __itt_id parentid) noexcept
+        : m_domain(domain)
+        , m_active(true)
+    {
+        __itt_task_begin(m_domain, taskid, parentid, name.native_handle());
     }
 
     ScopedTask(const ScopedTask&) = delete;

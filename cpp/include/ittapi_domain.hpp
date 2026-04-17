@@ -48,10 +48,20 @@ public:
         return ScopedTask(m_handle, name);
     }
 
+    ScopedTask task(std::string_view name, __itt_id taskid, __itt_id parentid) const
+    {
+        return ScopedTask(m_handle, name, taskid, parentid);
+    }
+
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
     ScopedTask task(std::wstring_view name) const
     {
         return ScopedTask(m_handle, name);
+    }
+
+    ScopedTask task(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
+    {
+        return ScopedTask(m_handle, name, taskid, parentid);
     }
 #endif
 
@@ -60,10 +70,21 @@ public:
         return ScopedTask(m_handle, name);
     }
 
+    ScopedTask task(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept
+    {
+        return ScopedTask(m_handle, name, taskid, parentid);
+    }
+
     void task_begin(std::string_view name) const
     {
         __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
         __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), h);
+    }
+
+    void task_begin(std::string_view name, __itt_id taskid, __itt_id parentid) const
+    {
+        __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
+        __itt_task_begin(m_handle, taskid, parentid, h);
     }
 
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
@@ -72,11 +93,22 @@ public:
         __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
         __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), h);
     }
+
+    void task_begin(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
+    {
+        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_task_begin(m_handle, taskid, parentid, h);
+    }
 #endif
 
     void task_begin(const StringHandle& name) const noexcept
     {
         __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), name.native_handle());
+    }
+
+    void task_begin(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept
+    {
+        __itt_task_begin(m_handle, taskid, parentid, name.native_handle());
     }
 
     void task_end() const noexcept
@@ -89,16 +121,31 @@ public:
         return ScopedRegion(m_handle, name);
     }
 
+    ScopedRegion region(std::string_view name, __itt_id id, __itt_id parentid) const
+    {
+        return ScopedRegion(m_handle, name, id, parentid);
+    }
+
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
     ScopedRegion region(std::wstring_view name) const
     {
         return ScopedRegion(m_handle, name);
+    }
+
+    ScopedRegion region(std::wstring_view name, __itt_id id, __itt_id parentid) const
+    {
+        return ScopedRegion(m_handle, name, id, parentid);
     }
 #endif
 
     ScopedRegion region(const StringHandle& name) const noexcept
     {
         return ScopedRegion(m_handle, name);
+    }
+
+    ScopedRegion region(const StringHandle& name, __itt_id id, __itt_id parentid) const noexcept
+    {
+        return ScopedRegion(m_handle, name, id, parentid);
     }
 
     ScopedFrame frame() const noexcept
