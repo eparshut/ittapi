@@ -17,7 +17,7 @@ A modern, header-only C++ wrapper for the [ITT API](https://github.com/intel/itt
 ## Requirements
 
 - C++17 or later
-- The existing `ittnotify` static library from this repository
+- The existing `ittnotify` static C-library
 
 ## Including the Wrapper
 
@@ -93,7 +93,7 @@ cmake --build build
 
 The `ITT_API_CPP_SUPPORT` option is `OFF` by default.
 
-You can also build with the helper script:
+You can also build with the build script:
 
 ```bash
 python buildall.py --cpp
@@ -135,7 +135,7 @@ Lightweight wrapper around `__itt_domain*` with convenience factories.
 ittapi::Domain d{"my.domain"};
 auto task   = d.task("task_name");     // returns ScopedTask (RAII)
 auto region = d.region("region_name"); // returns ScopedRegion
-auto frame  = d.frame();              // returns ScopedFrame
+auto frame  = d.frame();               // returns ScopedFrame
 
 d.task_begin("work");                  // manual begin
 d.task_end();                          // manual end
@@ -143,7 +143,7 @@ d.task_end();                          // manual end
 
 #### `ittapi::ScopedTask`
 
-RAII wrapper for task begin/end. Move-only.
+RAII wrapper for task begin/end.
 
 ```cpp
 {
@@ -163,11 +163,11 @@ domain.task_end();
 
 #### `ittapi::ScopedRegion`
 
-RAII wrapper for region begin/end. Move-only.
+RAII wrapper for region begin/end.
 
 #### `ittapi::ScopedFrame`
 
-RAII wrapper for frame begin/end. Move-only. Supports explicit timestamp submission.
+RAII wrapper for frame begin/end. Supports explicit timestamp submission.
 
 ```cpp
 ittapi::ScopedFrame::submit(domain.native_handle(), begin_ts, end_ts);
