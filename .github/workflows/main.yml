@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master , cpp_wrapper ]
   pull_request:
     branches: [ master ]
 
@@ -51,12 +51,14 @@ jobs:
     steps:
     - name: Checkout sources
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    - name: Configure
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DITT_API_CPP_SUPPORT=ON
-    - name: Build
-      run: cmake --build build --config Release
-    - name: Test
-      run: ctest --test-dir build/cpp --build-config Release --output-on-failure
+    - name: Build C++ wrapper
+      run: python buildall.py --force_bits 64 -cpp
+    - name: Test (Linux)
+      run: ctest --test-dir build_linux/64/cpp --build-config Release --output-on-failure
+      if: runner.os == 'Linux'
+    - name: Test (Windows)
+      run: ctest --test-dir build_win/64/cpp --build-config Release --output-on-failure
+      if: runner.os == 'Windows'
 
   rust_format:
     name: Check Rust formatting
