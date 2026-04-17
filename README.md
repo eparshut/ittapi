@@ -61,15 +61,6 @@ optional arguments:
 Find complete documentation for ITT/JIT APIs on the
 [ITT/JIT APIs Documentation Page](https://intel.github.io/ittapi)
 
-### Language Bindings
-
-| Language | Directory | Description |
-|----------|-----------|-------------|
-| C | `include/`, `src/` | Native C API headers and static library source |
-| C++ | [`cpp/`](cpp/README.md) | Header-only C++17 wrapper with RAII scoped helpers |
-| Python | [`python/`](python/README.md) | Python bindings |
-| Rust | [`rust/`](rust/README.md) | Rust crate |
-
 ### License
 
 All code in the repo is dual licensed under GPLv2 and 3-Clause BSD licenses
