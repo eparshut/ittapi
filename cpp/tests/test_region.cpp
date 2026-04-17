@@ -16,7 +16,7 @@ static void test_scoped_region_lifecycle()
 
     {
         auto region = d.region("lifecycle_region");
-        ITT_CHECK(region.active());
+        CHECK(region.active());
     }
 }
 
@@ -24,22 +24,22 @@ static void test_explicit_end_is_idempotent()
 {
     ittapi::Domain d{"test.region.end"};
     auto region = d.region("end_region");
-    ITT_CHECK(region.active());
+    CHECK(region.active());
     region.end();
-    ITT_CHECK(!region.active());
+    CHECK(!region.active());
     region.end();
-    ITT_CHECK(!region.active());
+    CHECK(!region.active());
 }
 
 static void test_move_construction()
 {
     ittapi::Domain d{"test.region.move"};
     auto r1 = d.region("move_region");
-    ITT_CHECK(r1.active());
+    CHECK(r1.active());
 
     auto r2 = std::move(r1);
-    ITT_CHECK(!r1.active());
-    ITT_CHECK(r2.active());
+    CHECK(!r1.active());
+    CHECK(r2.active());
 }
 
 static void test_string_handle_overload()
@@ -50,7 +50,7 @@ static void test_string_handle_overload()
 
     {
         auto region = d.region(name);
-        ITT_CHECK(region.active());
+        CHECK(region.active());
     }
 }
 
@@ -65,7 +65,7 @@ static void test_scoped_region_with_ids()
 
     {
         auto region = d.region("region_with_ids", id, parentid);
-        ITT_CHECK(region.active());
+        CHECK(region.active());
     }
 }
 
@@ -79,7 +79,7 @@ static void test_scoped_region_with_ids_string_handle()
 
     {
         auto region = d.region(name, id, parentid);
-        ITT_CHECK(region.active());
+        CHECK(region.active());
     }
 }
 

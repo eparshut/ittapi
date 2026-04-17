@@ -16,7 +16,7 @@ static void test_scoped_frame_lifecycle()
 
     {
         auto frame = d.frame();
-        ITT_CHECK(frame.active());
+        CHECK(frame.active());
     }
 }
 
@@ -24,22 +24,22 @@ static void test_explicit_end_is_idempotent()
 {
     ittapi::Domain d{"test.frame.end"};
     auto frame = d.frame();
-    ITT_CHECK(frame.active());
+    CHECK(frame.active());
     frame.end();
-    ITT_CHECK(!frame.active());
+    CHECK(!frame.active());
     frame.end();
-    ITT_CHECK(!frame.active());
+    CHECK(!frame.active());
 }
 
 static void test_move_construction()
 {
     ittapi::Domain d{"test.frame.move"};
     auto f1 = d.frame();
-    ITT_CHECK(f1.active());
+    CHECK(f1.active());
 
     auto f2 = std::move(f1);
-    ITT_CHECK(!f1.active());
-    ITT_CHECK(f2.active());
+    CHECK(!f1.active());
+    CHECK(f2.active());
 }
 
 static void test_submit()

@@ -17,7 +17,7 @@
 // Assertion macros with file/line diagnostics
 // ---------------------------------------------------------------------------
 
-#define ITT_CHECK(expr)                                                    \
+#define CHECK(expr)                                                    \
     do                                                                     \
     {                                                                      \
         if (!(expr))                                                       \
@@ -28,7 +28,7 @@
         }                                                                  \
     } while (0)
 
-#define ITT_CHECK_STR_EQ(actual, expected)                                 \
+#define CHECK_STR_EQ(actual, expected)                                 \
     do                                                                     \
     {                                                                      \
         const char* a_ = (actual);                                         \
@@ -56,7 +56,7 @@ inline void check_domain_name(const Domain& domain, const char* expected)
     {
         return; // no collector attached — nothing to verify
     }
-    ITT_CHECK_STR_EQ(domain.native_handle()->nameA, expected);
+    CHECK_STR_EQ(domain.native_handle()->nameA, expected);
 }
 
 inline void check_string_handle_name(const StringHandle& handle, const char* expected)
@@ -65,7 +65,7 @@ inline void check_string_handle_name(const StringHandle& handle, const char* exp
     {
         return; // no collector attached — nothing to verify
     }
-    ITT_CHECK_STR_EQ(handle.native_handle()->strA, expected);
+    CHECK_STR_EQ(handle.native_handle()->strA, expected);
 }
 
 inline void check_id_fields(const __itt_id& id,

@@ -19,7 +19,7 @@ static void test_scoped_pause_resumes_on_destruction()
 
     {
         ittapi::ScopedPause sp;
-        ITT_CHECK(sp.active());
+        CHECK(sp.active());
     }
     // destructor should have called resume()
 }
@@ -27,20 +27,20 @@ static void test_scoped_pause_resumes_on_destruction()
 static void test_resume_now_disables_destructor()
 {
     ittapi::ScopedPause sp;
-    ITT_CHECK(sp.active());
+    CHECK(sp.active());
     sp.resume_now();
-    ITT_CHECK(!sp.active());
+    CHECK(!sp.active());
     // destructor should not call resume() again
 }
 
 static void test_move_construction()
 {
     ittapi::ScopedPause sp1;
-    ITT_CHECK(sp1.active());
+    CHECK(sp1.active());
 
     auto sp2 = std::move(sp1);
-    ITT_CHECK(!sp1.active());
-    ITT_CHECK(sp2.active());
+    CHECK(!sp1.active());
+    CHECK(sp2.active());
 }
 
 int main()

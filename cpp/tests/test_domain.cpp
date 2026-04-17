@@ -19,7 +19,7 @@ static void test_create_task_from_domain()
 
     {
         auto task = d.task("my_task");
-        ITT_CHECK(task.active());
+        CHECK(task.active());
     }
 }
 
@@ -31,7 +31,7 @@ static void test_create_task_with_string_handle()
 
     {
         auto task = d.task(name);
-        ITT_CHECK(task.active());
+        CHECK(task.active());
     }
 }
 
@@ -42,7 +42,7 @@ static void test_create_region_from_domain()
 
     {
         auto region = d.region("my_region");
-        ITT_CHECK(region.active());
+        CHECK(region.active());
     }
 }
 
@@ -53,7 +53,7 @@ static void test_create_frame_from_domain()
 
     {
         auto frame = d.frame();
-        ITT_CHECK(frame.active());
+        CHECK(frame.active());
     }
 }
 

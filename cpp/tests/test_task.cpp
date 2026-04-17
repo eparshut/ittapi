@@ -16,7 +16,7 @@ static void test_scoped_task_lifecycle()
 
     {
         auto task = d.task("lifecycle_task");
-        ITT_CHECK(task.active());
+        CHECK(task.active());
     }
     // destructor should have ended the task
 }
@@ -25,22 +25,22 @@ static void test_explicit_end_is_idempotent()
 {
     ittapi::Domain d{"test.task.end"};
     auto task = d.task("end_task");
-    ITT_CHECK(task.active());
+    CHECK(task.active());
     task.end();
-    ITT_CHECK(!task.active());
+    CHECK(!task.active());
     task.end();  // second call should be safe
-    ITT_CHECK(!task.active());
+    CHECK(!task.active());
 }
 
 static void test_move_construction()
 {
     ittapi::Domain d{"test.task.move"};
     auto task1 = d.task("move_task");
-    ITT_CHECK(task1.active());
+    CHECK(task1.active());
 
     auto task2 = std::move(task1);
-    ITT_CHECK(!task1.active());
-    ITT_CHECK(task2.active());
+    CHECK(!task1.active());
+    CHECK(task2.active());
 }
 
 static void test_string_handle_overload()
@@ -51,7 +51,7 @@ static void test_string_handle_overload()
 
     {
         auto task = d.task(name);
-        ITT_CHECK(task.active());
+        CHECK(task.active());
     }
 }
 
@@ -80,7 +80,7 @@ static void test_scoped_task_with_ids()
 
     {
         auto task = d.task("task_with_ids", taskid, parentid);
-        ITT_CHECK(task.active());
+        CHECK(task.active());
     }
 }
 
@@ -94,7 +94,7 @@ static void test_scoped_task_with_ids_string_handle()
 
     {
         auto task = d.task(name, taskid, parentid);
-        ITT_CHECK(task.active());
+        CHECK(task.active());
     }
 }
 

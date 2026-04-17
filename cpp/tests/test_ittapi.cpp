@@ -20,24 +20,24 @@ static void test_umbrella_header_compiles()
 
     {
         auto task = d.task("umbrella_task");
-        ITT_CHECK(task.active());
+        CHECK(task.active());
     }
 
     {
         auto region = d.region(sh);
-        ITT_CHECK(region.active());
+        CHECK(region.active());
     }
 
     {
         auto frame = d.frame();
-        ITT_CHECK(frame.active());
+        CHECK(frame.active());
     }
 
     {
         ittapi::ScopedPause sp;
-        ITT_CHECK(sp.active());
+        CHECK(sp.active());
         sp.resume_now();
-        ITT_CHECK(!sp.active());
+        CHECK(!sp.active());
     }
 
     d.task_begin("manual");
