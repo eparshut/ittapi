@@ -41,7 +41,7 @@ To build the library:
 - To list available build options execute: `python buildall.py -h`
 
 ```
-usage: buildall.py [-h] [-d] [-c] [-v] [-pt] [-ft] [--force_bits]
+usage: buildall.py [-h] [-d] [-c] [-v] [-pt] [-ft] [--cpp] [--force_bits]
 
 optional arguments:
   -h, --help      show this help message and exit
@@ -50,6 +50,7 @@ optional arguments:
   -v, --verbose   enable verbose output from build process
   -pt, --ptmark   enable anomaly detection support
   -ft, --fortran  enable fortran support
+  --cpp           enable C++ wrapper support
   --force_bits    specify bit version for the target
   --vs            specify visual studio version (Windows only)
   --cmake_gen     specify cmake build generator (Windows only)
@@ -59,6 +60,15 @@ optional arguments:
 
 Find complete documentation for ITT/JIT APIs on the
 [ITT/JIT APIs Documentation Page](https://intel.github.io/ittapi)
+
+### Language Bindings
+
+| Language | Directory | Description |
+|----------|-----------|-------------|
+| C | `include/`, `src/` | Native C API headers and static library source |
+| C++ | [`cpp/`](cpp/README.md) | Header-only C++17 wrapper with RAII scoped helpers |
+| Python | [`python/`](python/README.md) | Python bindings |
+| Rust | [`rust/`](rust/README.md) | Rust crate |
 
 ### License
 

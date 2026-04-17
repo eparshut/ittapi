@@ -39,6 +39,25 @@ jobs:
       #    doesn't work in case of CMake + VS (https://github.com/fortran-lang/setup-fortran/issues/45)
       run: python buildall.py --force_bits 64 -ft ${{ matrix.optional_args }}
 
+  cpp_wrapper:
+    name: Check C++ wrapper
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - name: Configure
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DITT_API_CPP_SUPPORT=ON
+    - name: Build
+      run: cmake --build build --config Release
+    - name: Test
+      run: ctest --test-dir build/cpp --build-config Release --output-on-failure
+
   rust_format:
     name: Check Rust formatting
     runs-on: ubuntu-latest
