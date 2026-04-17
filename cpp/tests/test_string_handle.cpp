@@ -4,32 +4,29 @@
 */
 
 #include <ittapi_string_handle.hpp>
+#include "test_helpers.hpp"
 
-#include <cassert>
 #include <string>
 #include <string_view>
 
 static void test_construct_from_literal()
 {
     ittapi::StringHandle h{"test_handle"};
-    // valid() may be false if no collector is attached; just verify it compiles and runs
-    (void)h.valid();
-    (void)h.native_handle();
+    ittapi::test::check_string_handle_name(h, "test_handle");
 }
 
 static void test_construct_from_string_view()
 {
     std::string_view sv = "test_sv_handle";
     ittapi::StringHandle h{sv};
-    (void)h.valid();
-    (void)h.native_handle();
+    ittapi::test::check_string_handle_name(h, "test_sv_handle");
 }
 
 static void test_construct_from_std_string()
 {
     std::string s = "test_string_handle";
     ittapi::StringHandle h{std::string_view(s)};
-    (void)h.valid();
+    ittapi::test::check_string_handle_name(h, "test_string_handle");
 }
 
 int main()

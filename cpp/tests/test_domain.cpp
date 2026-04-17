@@ -4,23 +4,22 @@
 */
 
 #include <ittapi_domain.hpp>
-
-#include <cassert>
+#include "test_helpers.hpp"
 
 static void test_construct_domain()
 {
     ittapi::Domain d{"test.domain"};
-    (void)d.valid();
-    (void)d.native_handle();
+    ittapi::test::check_domain_name(d, "test.domain");
 }
 
 static void test_create_task_from_domain()
 {
     ittapi::Domain d{"test.domain.task"};
+    ittapi::test::check_domain_name(d, "test.domain.task");
 
     {
         auto task = d.task("my_task");
-        assert(task.active());
+        ITT_CHECK(task.active());
     }
 }
 
@@ -28,30 +27,33 @@ static void test_create_task_with_string_handle()
 {
     ittapi::Domain d{"test.domain.task_sh"};
     ittapi::StringHandle name{"my_task"};
+    ittapi::test::check_string_handle_name(name, "my_task");
 
     {
         auto task = d.task(name);
-        assert(task.active());
+        ITT_CHECK(task.active());
     }
 }
 
 static void test_create_region_from_domain()
 {
     ittapi::Domain d{"test.domain.region"};
+    ittapi::test::check_domain_name(d, "test.domain.region");
 
     {
         auto region = d.region("my_region");
-        assert(region.active());
+        ITT_CHECK(region.active());
     }
 }
 
 static void test_create_frame_from_domain()
 {
     ittapi::Domain d{"test.domain.frame"};
+    ittapi::test::check_domain_name(d, "test.domain.frame");
 
     {
         auto frame = d.frame();
-        assert(frame.active());
+        ITT_CHECK(frame.active());
     }
 }
 

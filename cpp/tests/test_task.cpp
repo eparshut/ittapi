@@ -5,17 +5,18 @@
 
 #include <ittapi_domain.hpp>
 #include <ittapi_task.hpp>
+#include "test_helpers.hpp"
 
-#include <cassert>
 #include <utility>
 
 static void test_scoped_task_lifecycle()
 {
     ittapi::Domain d{"test.task.lifecycle"};
+    ittapi::test::check_domain_name(d, "test.task.lifecycle");
 
     {
         auto task = d.task("lifecycle_task");
-        assert(task.active());
+        ITT_CHECK(task.active());
     }
     // destructor should have ended the task
 }
@@ -24,32 +25,33 @@ static void test_explicit_end_is_idempotent()
 {
     ittapi::Domain d{"test.task.end"};
     auto task = d.task("end_task");
-    assert(task.active());
+    ITT_CHECK(task.active());
     task.end();
-    assert(!task.active());
+    ITT_CHECK(!task.active());
     task.end();  // second call should be safe
-    assert(!task.active());
+    ITT_CHECK(!task.active());
 }
 
 static void test_move_construction()
 {
     ittapi::Domain d{"test.task.move"};
     auto task1 = d.task("move_task");
-    assert(task1.active());
+    ITT_CHECK(task1.active());
 
     auto task2 = std::move(task1);
-    assert(!task1.active());
-    assert(task2.active());
+    ITT_CHECK(!task1.active());
+    ITT_CHECK(task2.active());
 }
 
 static void test_string_handle_overload()
 {
     ittapi::Domain d{"test.task.sh"};
     ittapi::StringHandle name{"sh_task"};
+    ittapi::test::check_string_handle_name(name, "sh_task");
 
     {
         auto task = d.task(name);
-        assert(task.active());
+        ITT_CHECK(task.active());
     }
 }
 
@@ -74,9 +76,11 @@ static void test_scoped_task_with_ids()
     __itt_id taskid = __itt_id_make(nullptr, 1);
     __itt_id parentid = __itt_null;
 
+    ittapi::test::check_id_is_null(parentid);
+
     {
         auto task = d.task("task_with_ids", taskid, parentid);
-        assert(task.active());
+        ITT_CHECK(task.active());
     }
 }
 
@@ -84,12 +88,13 @@ static void test_scoped_task_with_ids_string_handle()
 {
     ittapi::Domain d{"test.task.ids_sh"};
     ittapi::StringHandle name{"sh_task_ids"};
+    ittapi::test::check_string_handle_name(name, "sh_task_ids");
     __itt_id taskid = __itt_id_make(nullptr, 2);
     __itt_id parentid = __itt_null;
 
     {
         auto task = d.task(name, taskid, parentid);
-        assert(task.active());
+        ITT_CHECK(task.active());
     }
 }
 

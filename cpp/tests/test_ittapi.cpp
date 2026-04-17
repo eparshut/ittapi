@@ -4,13 +4,15 @@
 */
 
 #include <ittapi.hpp>
-
-#include <cassert>
+#include "test_helpers.hpp"
 
 static void test_umbrella_header_compiles()
 {
     ittapi::Domain d{"test.umbrella"};
     ittapi::StringHandle sh{"umbrella_handle"};
+
+    ittapi::test::check_domain_name(d, "test.umbrella");
+    ittapi::test::check_string_handle_name(sh, "umbrella_handle");
 
     ittapi::set_thread_name("umbrella_thread");
     ittapi::pause();
@@ -18,24 +20,24 @@ static void test_umbrella_header_compiles()
 
     {
         auto task = d.task("umbrella_task");
-        assert(task.active());
+        ITT_CHECK(task.active());
     }
 
     {
         auto region = d.region(sh);
-        assert(region.active());
+        ITT_CHECK(region.active());
     }
 
     {
         auto frame = d.frame();
-        assert(frame.active());
+        ITT_CHECK(frame.active());
     }
 
     {
         ittapi::ScopedPause sp;
-        assert(sp.active());
+        ITT_CHECK(sp.active());
         sp.resume_now();
-        assert(!sp.active());
+        ITT_CHECK(!sp.active());
     }
 
     d.task_begin("manual");

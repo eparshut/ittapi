@@ -4,8 +4,8 @@
 */
 
 #include <ittapi_collection_control.hpp>
+#include "test_helpers.hpp"
 
-#include <cassert>
 #include <utility>
 
 static void test_pause_resume()
@@ -19,7 +19,7 @@ static void test_scoped_pause_resumes_on_destruction()
 
     {
         ittapi::ScopedPause sp;
-        assert(sp.active());
+        ITT_CHECK(sp.active());
     }
     // destructor should have called resume()
 }
@@ -27,20 +27,20 @@ static void test_scoped_pause_resumes_on_destruction()
 static void test_resume_now_disables_destructor()
 {
     ittapi::ScopedPause sp;
-    assert(sp.active());
+    ITT_CHECK(sp.active());
     sp.resume_now();
-    assert(!sp.active());
+    ITT_CHECK(!sp.active());
     // destructor should not call resume() again
 }
 
 static void test_move_construction()
 {
     ittapi::ScopedPause sp1;
-    assert(sp1.active());
+    ITT_CHECK(sp1.active());
 
     auto sp2 = std::move(sp1);
-    assert(!sp1.active());
-    assert(sp2.active());
+    ITT_CHECK(!sp1.active());
+    ITT_CHECK(sp2.active());
 }
 
 int main()

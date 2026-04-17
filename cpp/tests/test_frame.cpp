@@ -5,17 +5,18 @@
 
 #include <ittapi_domain.hpp>
 #include <ittapi_frame.hpp>
+#include "test_helpers.hpp"
 
-#include <cassert>
 #include <utility>
 
 static void test_scoped_frame_lifecycle()
 {
     ittapi::Domain d{"test.frame.lifecycle"};
+    ittapi::test::check_domain_name(d, "test.frame.lifecycle");
 
     {
         auto frame = d.frame();
-        assert(frame.active());
+        ITT_CHECK(frame.active());
     }
 }
 
@@ -23,22 +24,22 @@ static void test_explicit_end_is_idempotent()
 {
     ittapi::Domain d{"test.frame.end"};
     auto frame = d.frame();
-    assert(frame.active());
+    ITT_CHECK(frame.active());
     frame.end();
-    assert(!frame.active());
+    ITT_CHECK(!frame.active());
     frame.end();
-    assert(!frame.active());
+    ITT_CHECK(!frame.active());
 }
 
 static void test_move_construction()
 {
     ittapi::Domain d{"test.frame.move"};
     auto f1 = d.frame();
-    assert(f1.active());
+    ITT_CHECK(f1.active());
 
     auto f2 = std::move(f1);
-    assert(!f1.active());
-    assert(f2.active());
+    ITT_CHECK(!f1.active());
+    ITT_CHECK(f2.active());
 }
 
 static void test_submit()
