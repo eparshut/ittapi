@@ -11,18 +11,36 @@
 
 #include "ittapi_utils.hpp"
 
-namespace ittapi {
+namespace ittapi
+{
 
-class StringHandle {
+class StringHandle
+{
 public:
     explicit StringHandle(std::string_view name)
-        : handle_(detail::create_string_handle(std::string(name).c_str())) {}
+        : m_handle(detail::create_string_handle(std::string(name).c_str()))
+    {
+    }
 
-    __itt_string_handle* native_handle() const noexcept { return handle_; }
-    bool valid() const noexcept { return handle_ != nullptr; }
+#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    explicit StringHandle(std::wstring_view name)
+        : m_handle(detail::create_string_handle(std::wstring(name).c_str()))
+    {
+    }
+#endif
+
+    __itt_string_handle* native_handle() const noexcept
+    {
+        return m_handle;
+    }
+
+    bool valid() const noexcept
+    {
+        return m_handle != nullptr;
+    }
 
 private:
-    __itt_string_handle* handle_ = nullptr;
+    __itt_string_handle* m_handle = nullptr;
 };
 
 }  // namespace ittapi

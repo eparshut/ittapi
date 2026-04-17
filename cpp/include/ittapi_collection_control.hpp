@@ -8,57 +8,75 @@
 
 #include <ittnotify.h>
 
-namespace ittapi {
+namespace ittapi
+{
 
-inline void pause() noexcept {
+inline void pause() noexcept
+{
     __itt_pause();
 }
 
-inline void resume() noexcept {
+inline void resume() noexcept
+{
     __itt_resume();
 }
 
-class ScopedPause {
+class ScopedPause
+{
 public:
-    ScopedPause() noexcept : active_(true) {
+    ScopedPause() noexcept
+        : m_active(true)
+    {
         __itt_pause();
     }
 
     ScopedPause(const ScopedPause&) = delete;
     ScopedPause& operator=(const ScopedPause&) = delete;
 
-    ScopedPause(ScopedPause&& other) noexcept : active_(other.active_) {
-        other.active_ = false;
+    ScopedPause(ScopedPause&& other) noexcept
+        : m_active(other.m_active)
+    {
+        other.m_active = false;
     }
 
-    ScopedPause& operator=(ScopedPause&& other) noexcept {
-        if (this != &other) {
-            if (active_) {
+    ScopedPause& operator=(ScopedPause&& other) noexcept
+    {
+        if (this != &other)
+        {
+            if (m_active)
+            {
                 __itt_resume();
             }
-            active_ = other.active_;
-            other.active_ = false;
+            m_active = other.m_active;
+            other.m_active = false;
         }
         return *this;
     }
 
-    ~ScopedPause() noexcept {
-        if (active_) {
+    ~ScopedPause() noexcept
+    {
+        if (m_active)
+        {
             __itt_resume();
         }
     }
 
-    void resume_now() noexcept {
-        if (active_) {
+    void resume_now() noexcept
+    {
+        if (m_active)
+        {
             __itt_resume();
-            active_ = false;
+            m_active = false;
         }
     }
 
-    bool active() const noexcept { return active_; }
+    bool active() const noexcept
+    {
+        return m_active;
+    }
 
 private:
-    bool active_ = false;
+    bool m_active = false;
 };
 
 }  // namespace ittapi

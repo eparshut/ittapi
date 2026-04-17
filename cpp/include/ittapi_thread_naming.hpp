@@ -11,11 +11,20 @@
 
 #include "ittapi_utils.hpp"
 
-namespace ittapi {
+namespace ittapi
+{
 
-inline void set_thread_name(std::string_view name) {
+inline void set_thread_name(std::string_view name)
+{
     detail::thread_set_name(std::string(name).c_str());
 }
+
+#if ITT_PLATFORM == ITT_PLATFORM_WIN
+inline void set_thread_name(std::wstring_view name)
+{
+    detail::thread_set_name(std::wstring(name).c_str());
+}
+#endif
 
 }  // namespace ittapi
 

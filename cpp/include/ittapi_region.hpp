@@ -12,59 +12,78 @@
 #include "ittapi_utils.hpp"
 #include "ittapi_string_handle.hpp"
 
-namespace ittapi {
+namespace ittapi
+{
 
 class Domain;
 
-class ScopedRegion {
+class ScopedRegion
+{
 public:
     ScopedRegion(const __itt_domain* domain, std::string_view name)
-        : domain_(domain), id_(detail::make_null_id()), active_(true) {
+        : m_domain(domain)
+        , m_id(detail::make_null_id())
+        , m_active(true)
+    {
         __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
-        __itt_region_begin(domain_, id_, detail::make_null_id(), h);
+        __itt_region_begin(m_domain, m_id, detail::make_null_id(), h);
     }
 
     ScopedRegion(const __itt_domain* domain, const StringHandle& name) noexcept
-        : domain_(domain), id_(detail::make_null_id()), active_(true) {
-        __itt_region_begin(domain_, id_, detail::make_null_id(), name.native_handle());
+        : m_domain(domain)
+        , m_id(detail::make_null_id())
+        , m_active(true)
+    {
+        __itt_region_begin(m_domain, m_id, detail::make_null_id(), name.native_handle());
     }
 
     ScopedRegion(const ScopedRegion&) = delete;
     ScopedRegion& operator=(const ScopedRegion&) = delete;
 
     ScopedRegion(ScopedRegion&& other) noexcept
-        : domain_(other.domain_), id_(other.id_), active_(other.active_) {
-        other.active_ = false;
+        : m_domain(other.m_domain)
+        , m_id(other.m_id)
+        , m_active(other.m_active)
+    {
+        other.m_active = false;
     }
 
-    ScopedRegion& operator=(ScopedRegion&& other) noexcept {
-        if (this != &other) {
+    ScopedRegion& operator=(ScopedRegion&& other) noexcept
+    {
+        if (this != &other)
+        {
             end();
-            domain_ = other.domain_;
-            id_ = other.id_;
-            active_ = other.active_;
-            other.active_ = false;
+            m_domain = other.m_domain;
+            m_id = other.m_id;
+            m_active = other.m_active;
+            other.m_active = false;
         }
         return *this;
     }
 
-    ~ScopedRegion() noexcept {
+    ~ScopedRegion() noexcept
+    {
         end();
     }
 
-    void end() noexcept {
-        if (active_) {
-            __itt_region_end(domain_, id_);
-            active_ = false;
+    void end() noexcept
+    {
+        if (m_active)
+        {
+            __itt_region_end(m_domain, m_id);
+            m_active = false;
         }
     }
 
-    bool active() const noexcept { return active_; }
+    bool active() const noexcept
+    {
+        return m_active;
+    }
 
 private:
-    const __itt_domain* domain_ = nullptr;
-    __itt_id id_{};
-    bool active_ = false;
+    const __itt_domain* m_domain = nullptr;
+    __itt_id m_id{};
+    bool m_active = false;
 };
 
 }  // namespace ittapi

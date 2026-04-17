@@ -15,51 +15,77 @@
 #include "ittapi_region.hpp"
 #include "ittapi_frame.hpp"
 
-namespace ittapi {
+namespace ittapi
+{
 
-class Domain {
+class Domain
+{
 public:
     explicit Domain(std::string_view name)
-        : handle_(detail::create_domain(std::string(name).c_str())) {}
-
-    __itt_domain* native_handle() const noexcept { return handle_; }
-    bool valid() const noexcept { return handle_ != nullptr; }
-
-    ScopedTask task(std::string_view name) const {
-        return ScopedTask(handle_, name);
+        : m_handle(detail::create_domain(std::string(name).c_str()))
+    {
     }
 
-    ScopedTask task(const StringHandle& name) const noexcept {
-        return ScopedTask(handle_, name);
+#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    explicit Domain(std::wstring_view name)
+        : m_handle(detail::create_domain(std::wstring(name).c_str()))
+    {
+    }
+#endif
+
+    __itt_domain* native_handle() const noexcept
+    {
+        return m_handle;
     }
 
-    void task_begin(std::string_view name) const {
+    bool valid() const noexcept
+    {
+        return m_handle != nullptr;
+    }
+
+    ScopedTask task(std::string_view name) const
+    {
+        return ScopedTask(m_handle, name);
+    }
+
+    ScopedTask task(const StringHandle& name) const noexcept
+    {
+        return ScopedTask(m_handle, name);
+    }
+
+    void task_begin(std::string_view name) const
+    {
         __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
-        __itt_task_begin(handle_, detail::make_null_id(), detail::make_null_id(), h);
+        __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), h);
     }
 
-    void task_begin(const StringHandle& name) const noexcept {
-        __itt_task_begin(handle_, detail::make_null_id(), detail::make_null_id(), name.native_handle());
+    void task_begin(const StringHandle& name) const noexcept
+    {
+        __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), name.native_handle());
     }
 
-    void task_end() const noexcept {
-        __itt_task_end(handle_);
+    void task_end() const noexcept
+    {
+        __itt_task_end(m_handle);
     }
 
-    ScopedRegion region(std::string_view name) const {
-        return ScopedRegion(handle_, name);
+    ScopedRegion region(std::string_view name) const
+    {
+        return ScopedRegion(m_handle, name);
     }
 
-    ScopedRegion region(const StringHandle& name) const noexcept {
-        return ScopedRegion(handle_, name);
+    ScopedRegion region(const StringHandle& name) const noexcept
+    {
+        return ScopedRegion(m_handle, name);
     }
 
-    ScopedFrame frame() const noexcept {
-        return ScopedFrame(handle_);
+    ScopedFrame frame() const noexcept
+    {
+        return ScopedFrame(m_handle);
     }
 
 private:
-    __itt_domain* handle_ = nullptr;
+    __itt_domain* m_handle = nullptr;
 };
 
 }  // namespace ittapi

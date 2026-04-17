@@ -8,58 +8,75 @@
 
 #include "ittapi_utils.hpp"
 
-namespace ittapi {
+namespace ittapi
+{
 
 class Domain;
 
-class ScopedFrame {
+class ScopedFrame
+{
 public:
     explicit ScopedFrame(const __itt_domain* domain) noexcept
-        : domain_(domain), id_(detail::make_null_id()), active_(true) {
-        __itt_frame_begin_v3(domain_, &id_);
+        : m_domain(domain)
+        , m_id(detail::make_null_id())
+        , m_active(true)
+    {
+        __itt_frame_begin_v3(m_domain, &m_id);
     }
 
     ScopedFrame(const ScopedFrame&) = delete;
     ScopedFrame& operator=(const ScopedFrame&) = delete;
 
     ScopedFrame(ScopedFrame&& other) noexcept
-        : domain_(other.domain_), id_(other.id_), active_(other.active_) {
-        other.active_ = false;
+        : m_domain(other.m_domain)
+        , m_id(other.m_id)
+        , m_active(other.m_active)
+    {
+        other.m_active = false;
     }
 
-    ScopedFrame& operator=(ScopedFrame&& other) noexcept {
-        if (this != &other) {
+    ScopedFrame& operator=(ScopedFrame&& other) noexcept
+    {
+        if (this != &other)
+        {
             end();
-            domain_ = other.domain_;
-            id_ = other.id_;
-            active_ = other.active_;
-            other.active_ = false;
+            m_domain = other.m_domain;
+            m_id = other.m_id;
+            m_active = other.m_active;
+            other.m_active = false;
         }
         return *this;
     }
 
-    ~ScopedFrame() noexcept {
+    ~ScopedFrame() noexcept
+    {
         end();
     }
 
-    void end() noexcept {
-        if (active_) {
-            __itt_frame_end_v3(domain_, &id_);
-            active_ = false;
+    void end() noexcept
+    {
+        if (m_active)
+        {
+            __itt_frame_end_v3(m_domain, &m_id);
+            m_active = false;
         }
     }
 
-    bool active() const noexcept { return active_; }
+    bool active() const noexcept
+    {
+        return m_active;
+    }
 
-    static void submit(const __itt_domain* domain, __itt_timestamp begin, __itt_timestamp end) noexcept {
+    static void submit(const __itt_domain* domain, __itt_timestamp begin, __itt_timestamp end) noexcept
+    {
         __itt_id id = detail::make_null_id();
         __itt_frame_submit_v3(domain, &id, begin, end);
     }
 
 private:
-    const __itt_domain* domain_ = nullptr;
-    __itt_id id_{};
-    bool active_ = false;
+    const __itt_domain* m_domain = nullptr;
+    __itt_id m_id{};
+    bool m_active = false;
 };
 
 }  // namespace ittapi
