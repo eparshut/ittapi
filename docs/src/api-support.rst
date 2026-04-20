@@ -28,6 +28,7 @@ Other Language API Bindings:
    :maxdepth: 1
    
    
+   itt-api-cpp-wrapper
    Rust ITT API Bindings <https://docs.rs/ittapi/latest/ittapi>
    Python ITT API Bindings <https://pypi.org/project/ittapi>
 
