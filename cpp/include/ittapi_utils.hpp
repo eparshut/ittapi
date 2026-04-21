@@ -8,6 +8,9 @@
 
 #include <ittnotify.h>
 
+#include <string_view>
+#include <unordered_map>
+
 namespace ittapi
 {
 namespace detail
@@ -31,6 +34,22 @@ inline __itt_string_handle* create_string_handle(const char* name) noexcept
 #endif
 }
 
+inline __itt_string_handle* get_or_create_string_handle(std::string_view name)
+{
+    thread_local std::unordered_map<std::string_view, __itt_string_handle*> cache;
+    auto it = cache.find(name);
+    if (it != cache.end())
+    {
+        return it->second;
+    }
+    __itt_string_handle* h = create_string_handle(std::string(name).c_str());
+    if (h != nullptr)
+    {
+        cache.emplace(h->strA, h);
+    }
+    return h;
+}
+
 inline void thread_set_name(const char* name) noexcept
 {
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
@@ -50,6 +69,22 @@ inline __itt_domain* create_domain(const wchar_t* name) noexcept
 inline __itt_string_handle* create_string_handle(const wchar_t* name) noexcept
 {
     return __itt_string_handle_createW(name);
+}
+
+inline __itt_string_handle* get_or_create_string_handle(std::wstring_view name)
+{
+    thread_local std::unordered_map<std::wstring_view, __itt_string_handle*> cache;
+    auto it = cache.find(name);
+    if (it != cache.end())
+    {
+        return it->second;
+    }
+    __itt_string_handle* h = create_string_handle(std::wstring(name).c_str());
+    if (h != nullptr)
+    {
+        cache.emplace(h->strW, h);
+    }
+    return h;
 }
 
 inline void thread_set_name(const wchar_t* name) noexcept

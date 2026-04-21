@@ -24,7 +24,7 @@ public:
         : m_domain(domain)
         , m_active(true)
     {
-        __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
+        __itt_string_handle* h = detail::get_or_create_string_handle(name);
         __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), h);
     }
 
@@ -33,7 +33,7 @@ public:
         : m_domain(domain)
         , m_active(true)
     {
-        __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
+        __itt_string_handle* h = detail::get_or_create_string_handle(name);
         __itt_task_begin(m_domain, taskid, parentid, h);
     }
 
@@ -42,7 +42,7 @@ public:
         : m_domain(domain)
         , m_active(true)
     {
-        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_string_handle* h = detail::get_or_create_string_handle(name);
         __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), h);
     }
 
@@ -51,7 +51,7 @@ public:
         : m_domain(domain)
         , m_active(true)
     {
-        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_string_handle* h = detail::get_or_create_string_handle(name);
         __itt_task_begin(m_domain, taskid, parentid, h);
     }
 #endif

@@ -93,26 +93,26 @@ public:
 
     void task_begin(std::string_view name) const
     {
-        __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
+        __itt_string_handle* h = detail::get_or_create_string_handle(name);
         __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), h);
     }
 
     void task_begin(std::string_view name, __itt_id taskid, __itt_id parentid) const
     {
-        __itt_string_handle* h = detail::create_string_handle(std::string(name).c_str());
+        __itt_string_handle* h = detail::get_or_create_string_handle(name);
         __itt_task_begin(m_handle, taskid, parentid, h);
     }
 
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
     void task_begin(std::wstring_view name) const
     {
-        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_string_handle* h = detail::get_or_create_string_handle(name);
         __itt_task_begin(m_handle, detail::make_null_id(), detail::make_null_id(), h);
     }
 
     void task_begin(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
     {
-        __itt_string_handle* h = detail::create_string_handle(std::wstring(name).c_str());
+        __itt_string_handle* h = detail::get_or_create_string_handle(name);
         __itt_task_begin(m_handle, taskid, parentid, h);
     }
 #endif
