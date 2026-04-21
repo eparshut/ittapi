@@ -52,20 +52,20 @@ namespace test
 
 inline void check_domain_name(const Domain& domain, const char* expected)
 {
-    if (domain.native_handle() == nullptr)
+    if (domain.get() == nullptr)
     {
         return; // no collector attached — nothing to verify
     }
-    CHECK_STR_EQ(domain.native_handle()->nameA, expected);
+    CHECK_STR_EQ(domain.get()->nameA, expected);
 }
 
 inline void check_string_handle_name(const StringHandle& handle, const char* expected)
 {
-    if (handle.native_handle() == nullptr)
+    if (handle.get() == nullptr)
     {
         return; // no collector attached — nothing to verify
     }
-    CHECK_STR_EQ(handle.native_handle()->strA, expected);
+    CHECK_STR_EQ(handle.get()->strA, expected);
 }
 
 inline void check_id_fields(const __itt_id& id,

@@ -60,7 +60,7 @@ public:
         : m_domain(domain)
         , m_active(true)
     {
-        __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), name.native_handle());
+        __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), name.get());
     }
 
     ScopedTask(const __itt_domain* domain, const StringHandle& name,
@@ -68,7 +68,7 @@ public:
         : m_domain(domain)
         , m_active(true)
     {
-        __itt_task_begin(m_domain, taskid, parentid, name.native_handle());
+        __itt_task_begin(m_domain, taskid, parentid, name.get());
     }
 
     ScopedTask(const ScopedTask&) = delete;

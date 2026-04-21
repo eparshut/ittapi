@@ -29,7 +29,7 @@ public:
     }
 #endif
 
-    __itt_string_handle* native_handle() const noexcept
+    __itt_string_handle* get() const noexcept
     {
         return m_handle;
     }

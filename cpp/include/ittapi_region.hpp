@@ -65,7 +65,7 @@ public:
         , m_id(detail::make_null_id())
         , m_active(true)
     {
-        __itt_region_begin(m_domain, m_id, detail::make_null_id(), name.native_handle());
+        __itt_region_begin(m_domain, m_id, detail::make_null_id(), name.get());
     }
 
     ScopedRegion(const __itt_domain* domain, const StringHandle& name,
@@ -74,7 +74,7 @@ public:
         , m_id(id)
         , m_active(true)
     {
-        __itt_region_begin(m_domain, m_id, parentid, name.native_handle());
+        __itt_region_begin(m_domain, m_id, parentid, name.get());
     }
 
     ScopedRegion(const ScopedRegion&) = delete;

@@ -124,7 +124,7 @@ Lightweight wrapper around `__itt_string_handle*`.
 ```cpp
 ittapi::StringHandle h{"my_handle"};
 h.valid();           // true if handle was created
-h.native_handle();   // underlying __itt_string_handle*
+h.get();   // underlying __itt_string_handle*
 ```
 
 #### `ittapi::Domain`
@@ -170,7 +170,7 @@ RAII wrapper for region begin/end.
 RAII wrapper for frame begin/end. Supports explicit timestamp submission.
 
 ```cpp
-ittapi::ScopedFrame::submit(domain.native_handle(), begin_ts, end_ts);
+ittapi::ScopedFrame::submit(domain.get(), begin_ts, end_ts);
 ```
 
 #### `ittapi::ScopedPause`

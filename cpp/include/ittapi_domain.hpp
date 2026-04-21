@@ -33,7 +33,7 @@ public:
     }
 #endif
 
-    __itt_domain* native_handle() const noexcept
+    __itt_domain* get() const noexcept
     {
         return m_domain;
     }
@@ -119,12 +119,12 @@ public:
 
     void task_begin(const StringHandle& name) const noexcept
     {
-        __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), name.native_handle());
+        __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), name.get());
     }
 
     void task_begin(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept
     {
-        __itt_task_begin(m_domain, taskid, parentid, name.native_handle());
+        __itt_task_begin(m_domain, taskid, parentid, name.get());
     }
 
     void task_end() const noexcept

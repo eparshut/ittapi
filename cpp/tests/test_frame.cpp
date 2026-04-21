@@ -46,7 +46,7 @@ static void test_submit()
 {
     ittapi::Domain d{"test.frame.submit"};
     // Just verify it compiles and runs without a collector
-    ittapi::ScopedFrame::submit(d.native_handle(), 0, 100);
+    ittapi::ScopedFrame::submit(d.get(), 0, 100);
 }
 
 int main()
