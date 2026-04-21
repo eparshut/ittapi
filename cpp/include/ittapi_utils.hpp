@@ -82,7 +82,7 @@ inline __itt_string_handle* get_or_create_string_handle(std::wstring_view name)
     __itt_string_handle* h = create_string_handle(std::wstring(name).c_str());
     if (h != nullptr)
     {
-        cache.emplace(h->strW, h);
+        cache.emplace(static_cast<const wchar_t*>(h->strW), h);
     }
     return h;
 }
