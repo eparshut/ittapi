@@ -158,7 +158,6 @@ static void test_overlapped_auto_id_parent_child()
 
     CHECK(parent.active());
     CHECK(child.active());
-    CHECK(parent.id().d2 != child.id().d2);
 
     parent.end();
     CHECK(!parent.active());
@@ -174,6 +173,17 @@ static void test_non_overlapped_id_is_null()
     auto task = d.task("simple");
     __itt_id tid = task.id();
     CHECK(tid.d1 == 0 && tid.d2 == 0 && tid.d3 == 0);
+}
+
+static void test_overlapped_same_name_same_id()
+{
+    ittapi::Domain d{"test.task.same_name_id"};
+    auto task1 = d.overlapped_task("work");
+    auto task2 = d.overlapped_task("work");
+
+    // Same name on the same thread must produce the same task ID
+    CHECK(task1.id().d2 == task2.id().d2);
+    CHECK(task1.id().d2 != 0);
 }
 
 int main()
@@ -192,5 +202,6 @@ int main()
     test_overlapped_auto_id();
     test_overlapped_auto_id_parent_child();
     test_non_overlapped_id_is_null();
+    test_overlapped_same_name_same_id();
     return 0;
 }

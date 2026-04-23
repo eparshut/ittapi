@@ -41,6 +41,16 @@ public:
         __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
     }
 
+    ScopedTask(const __itt_domain* domain, __itt_string_handle* name,
+               __itt_id taskid, __itt_id parentid) noexcept
+        : m_domain(domain)
+        , m_taskid(taskid)
+        , m_overlapped(true)
+        , m_active(true)
+    {
+        __itt_task_begin_overlapped(m_domain, m_taskid, parentid, name);
+    }
+
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
     ScopedTask(const __itt_domain* domain, std::wstring_view name)
         : m_domain(domain)

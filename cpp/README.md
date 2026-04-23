@@ -161,7 +161,7 @@ d.task_end(id);                              // manual task end by ID
 
 #### `ittapi::ScopedTask`
 
-RAII wrapper for task begin/end. Use `domain.overlapped_task()` to create an overlapped task (tasks that can end in any order). The `id()` method returns the task's auto-generated `__itt_id`.
+RAII wrapper for task begin/end. Use `domain.overlapped_task()` to create an overlapped task (tasks that can end in any order). Overlapped tasks with the same name on the same thread share a single `__itt_id`, generated automatically on first use. The `id()` method returns this ID.
 
 ```cpp
 // Simple task
