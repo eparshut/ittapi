@@ -133,6 +133,30 @@ Tests are registered inside the ``cpp/`` subdirectory. After building:
 
    ctest --test-dir build/cpp --output-on-failure
 
+Performance Tips
+----------------
+
+- **Pre-create** ``StringHandle`` **objects** for task/region names used in hot paths.
+  The ``StringHandle`` overloads pass a raw pointer with no locking — this is the
+  zero-overhead path.
+
+  .. code-block:: cpp
+
+     // Do this once at startup:
+     ittapi::StringHandle name{"compute"};
+
+     // Then in hot code:
+     auto task = domain.task(name);  // no allocation, no lock
+
+- **The** ``string_view`` **overloads** are convenient but allocate a ``std::string``
+  on cache miss and acquire a lock in the C library. Use them for setup or infrequent
+  tasks, not tight loops.
+- **Create** ``Domain`` **objects once** and reuse them. Domain creation is a global
+  lookup — store them as class members or globals, not as function locals called
+  repeatedly.
+- **Use overlapped tasks** (with IDs) only when you need tasks that end out of order.
+  Stack-based tasks (without IDs) are simpler and carry less internal state.
+
 API Reference
 -------------
 
@@ -169,22 +193,22 @@ Lightweight wrapper around ``__itt_domain*`` with convenience factories.
    auto region = d.region("region_name"); // returns ScopedRegion
    auto frame  = d.frame();               // returns ScopedFrame
 
-   d.task_begin("work");                  // manual begin (stack-based)
-   d.task_end();                          // manual end
+   d.task_begin("work");                  // manual task begin (simple stack-based)
+   d.task_end();                          // manual task end
 
    __itt_id id = __itt_id_make(nullptr, 1);
-   d.task_begin("overlapped", id, __itt_null);  // manual begin (overlapped)
-   d.task_end(id);                              // manual end by ID
+   d.task_begin("overlapped", id, __itt_null);  // manual task begin (overlapped)
+   d.task_end(id);                              // manual task end by ID
 
 ittapi::ScopedTask
 """"""""""""""""""
 
-RAII wrapper for task begin/end. Without IDs, uses stack-based task API.
+RAII wrapper for task begin/end. Without IDs, uses simple stack-based task API.
 With IDs, uses overlapped task API (tasks can end in any order).
 
 .. code-block:: cpp
 
-   // Stack-based task (no ID)
+   // Simple task
    {
        auto task = domain.task("work");
        // ... do work ...

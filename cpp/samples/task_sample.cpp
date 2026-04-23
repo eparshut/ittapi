@@ -59,7 +59,7 @@ int main()
         simulate_work(2);
     }                   // child ends here via destructor
 
-    // Manual task begin/end (non-RAII, stack-based)
+    // Manual task begin/end (non-RAII, simple task)
     domain.task_begin("manual_work");
     simulate_work(5);
     domain.task_end();
