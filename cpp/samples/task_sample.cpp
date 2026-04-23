@@ -45,20 +45,32 @@ int main()
         task.end();  // end early, destructor is a no-op
     }
 
-    // Scoped task with IDs for parent-child relationships
+    // Overlapped tasks with IDs — parent and child can end in any order
     {
         __itt_id parent_id = __itt_id_make(nullptr, 1);
         auto parent = domain.task("parent_task", parent_id, __itt_null);
+        simulate_work(3);
 
         __itt_id child_id = __itt_id_make(nullptr, 2);
         auto child = domain.task("child_task", child_id, parent_id);
         simulate_work(5);
-    }
 
-    // Manual task begin/end (non-RAII)
+        parent.end();   // end parent while child is still running
+        simulate_work(2);
+    }                   // child ends here via destructor
+
+    // Manual task begin/end (non-RAII, stack-based)
     domain.task_begin("manual_work");
     simulate_work(5);
     domain.task_end();
+
+    // Manual overlapped task begin/end (ID-based)
+    {
+        __itt_id id = __itt_id_make(nullptr, 3);
+        domain.task_begin("overlapped_manual", id, __itt_null);
+        simulate_work(5);
+        domain.task_end(id);
+    }
 
     // Scoped region
     {

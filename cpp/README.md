@@ -137,20 +137,39 @@ auto task   = d.task("task_name");     // returns ScopedTask (RAII)
 auto region = d.region("region_name"); // returns ScopedRegion
 auto frame  = d.frame();               // returns ScopedFrame
 
-d.task_begin("work");                  // manual begin
+d.task_begin("work");                  // manual begin (stack-based)
 d.task_end();                          // manual end
+
+__itt_id id = __itt_id_make(nullptr, 1);
+d.task_begin("overlapped", id, __itt_null);  // manual begin (overlapped)
+d.task_end(id);                              // manual end by ID
 ```
 
 #### `ittapi::ScopedTask`
 
-RAII wrapper for task begin/end.
+RAII wrapper for task begin/end. Without IDs, uses stack-based task API. With IDs, uses overlapped task API (tasks can end in any order).
 
 ```cpp
+// Stack-based task (no ID)
 {
     auto task = domain.task("work");
     // ... do work ...
     task.end();     // optional early end (idempotent)
 }                   // destructor ends task if still active
+```
+
+Overlapped tasks with IDs — safe to end in any order:
+
+```cpp
+{
+    __itt_id parent_id = __itt_id_make(nullptr, 1);
+    auto parent = domain.task("parent", parent_id, __itt_null);
+
+    __itt_id child_id = __itt_id_make(nullptr, 2);
+    auto child = domain.task("child", child_id, parent_id);
+
+    parent.end();  // end parent while child is still running
+}                  // child ends here via destructor
 ```
 
 For manual (non-RAII) control:
@@ -159,6 +178,12 @@ For manual (non-RAII) control:
 domain.task_begin("work");
 // ... do work ...
 domain.task_end();
+
+// Or with overlapped tasks:
+__itt_id id = __itt_id_make(nullptr, 1);
+domain.task_begin("overlapped_work", id, __itt_null);
+// ... do work ...
+domain.task_end(id);
 ```
 
 #### `ittapi::ScopedRegion`

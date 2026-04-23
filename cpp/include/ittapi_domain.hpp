@@ -100,7 +100,7 @@ public:
     void task_begin(std::string_view name, __itt_id taskid, __itt_id parentid) const
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_task_begin(m_domain, taskid, parentid, h);
+        __itt_task_begin_overlapped(m_domain, taskid, parentid, h);
     }
 
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
@@ -113,7 +113,7 @@ public:
     void task_begin(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_task_begin(m_domain, taskid, parentid, h);
+        __itt_task_begin_overlapped(m_domain, taskid, parentid, h);
     }
 #endif
 
@@ -124,12 +124,17 @@ public:
 
     void task_begin(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept
     {
-        __itt_task_begin(m_domain, taskid, parentid, name.get());
+        __itt_task_begin_overlapped(m_domain, taskid, parentid, name.get());
     }
 
     void task_end() const noexcept
     {
         __itt_task_end(m_domain);
+    }
+
+    void task_end(__itt_id taskid) const noexcept
+    {
+        __itt_task_end_overlapped(m_domain, taskid);
     }
 
     [[nodiscard]] ScopedRegion region(std::string_view name) const

@@ -22,6 +22,8 @@ class ScopedTask
 public:
     ScopedTask(const __itt_domain* domain, std::string_view name)
         : m_domain(domain)
+        , m_taskid(detail::make_null_id())
+        , m_overlapped(false)
         , m_active(true)
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
@@ -31,15 +33,19 @@ public:
     ScopedTask(const __itt_domain* domain, std::string_view name,
                __itt_id taskid, __itt_id parentid)
         : m_domain(domain)
+        , m_taskid(taskid)
+        , m_overlapped(true)
         , m_active(true)
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_task_begin(m_domain, taskid, parentid, h);
+        __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
     }
 
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
     ScopedTask(const __itt_domain* domain, std::wstring_view name)
         : m_domain(domain)
+        , m_taskid(detail::make_null_id())
+        , m_overlapped(false)
         , m_active(true)
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
@@ -49,15 +55,19 @@ public:
     ScopedTask(const __itt_domain* domain, std::wstring_view name,
                __itt_id taskid, __itt_id parentid)
         : m_domain(domain)
+        , m_taskid(taskid)
+        , m_overlapped(true)
         , m_active(true)
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_task_begin(m_domain, taskid, parentid, h);
+        __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
     }
 #endif
 
     ScopedTask(const __itt_domain* domain, const StringHandle& name) noexcept
         : m_domain(domain)
+        , m_taskid(detail::make_null_id())
+        , m_overlapped(false)
         , m_active(true)
     {
         __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), name.get());
@@ -66,9 +76,11 @@ public:
     ScopedTask(const __itt_domain* domain, const StringHandle& name,
                __itt_id taskid, __itt_id parentid) noexcept
         : m_domain(domain)
+        , m_taskid(taskid)
+        , m_overlapped(true)
         , m_active(true)
     {
-        __itt_task_begin(m_domain, taskid, parentid, name.get());
+        __itt_task_begin_overlapped(m_domain, m_taskid, parentid, name.get());
     }
 
     ScopedTask(const ScopedTask&) = delete;
@@ -77,6 +89,8 @@ public:
 
     ScopedTask(ScopedTask&& other) noexcept
         : m_domain(other.m_domain)
+        , m_taskid(other.m_taskid)
+        , m_overlapped(other.m_overlapped)
         , m_active(other.m_active)
     {
         other.m_active = false;
@@ -91,7 +105,14 @@ public:
     {
         if (m_active)
         {
-            __itt_task_end(m_domain);
+            if (m_overlapped)
+            {
+                __itt_task_end_overlapped(m_domain, m_taskid);
+            }
+            else
+            {
+                __itt_task_end(m_domain);
+            }
             m_active = false;
         }
     }
@@ -103,6 +124,8 @@ public:
 
 private:
     const __itt_domain* m_domain = nullptr;
+    __itt_id m_taskid{};
+    bool m_overlapped = false;
     bool m_active = false;
 };
 

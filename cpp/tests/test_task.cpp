@@ -105,7 +105,40 @@ static void test_manual_task_begin_end_with_ids()
     __itt_id parentid = __itt_null;
 
     d.task_begin("manual_ids_task", taskid, parentid);
-    d.task_end();
+    d.task_end(taskid);
+}
+
+static void test_overlapped_tasks_interleaved()
+{
+    ittapi::Domain d{"test.task.overlapped"};
+    __itt_id id1 = __itt_id_make(nullptr, 100);
+    __itt_id id2 = __itt_id_make(nullptr, 200);
+
+    // Start parent, start child, end parent, end child — only valid with overlapped
+    auto parent = d.task("parent", id1, __itt_null);
+    auto child = d.task("child", id2, id1);
+
+    CHECK(parent.active());
+    CHECK(child.active());
+
+    parent.end();
+    CHECK(!parent.active());
+    CHECK(child.active());
+
+    child.end();
+    CHECK(!child.active());
+}
+
+static void test_overlapped_manual_interleaved()
+{
+    ittapi::Domain d{"test.task.overlapped_manual"};
+    __itt_id id1 = __itt_id_make(nullptr, 300);
+    __itt_id id2 = __itt_id_make(nullptr, 400);
+
+    d.task_begin("first", id1, __itt_null);
+    d.task_begin("second", id2, __itt_null);
+    d.task_end(id1);
+    d.task_end(id2);
 }
 
 int main()
@@ -119,5 +152,7 @@ int main()
     test_scoped_task_with_ids();
     test_scoped_task_with_ids_string_handle();
     test_manual_task_begin_end_with_ids();
+    test_overlapped_tasks_interleaved();
+    test_overlapped_manual_interleaved();
     return 0;
 }
