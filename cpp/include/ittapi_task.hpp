@@ -31,24 +31,6 @@ public:
     }
 
     ScopedTask(const __itt_domain* domain, std::string_view name,
-               bool overlapped, __itt_id parentid = detail::get_null_id())
-        : m_domain(domain)
-        , m_taskid(overlapped ? detail::gen_id() : detail::get_null_id())
-        , m_overlapped(overlapped)
-        , m_active(true)
-    {
-        __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        if (m_overlapped)
-        {
-            __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
-        }
-        else
-        {
-            __itt_task_begin(m_domain, detail::get_null_id(), detail::get_null_id(), h);
-        }
-    }
-
-    ScopedTask(const __itt_domain* domain, std::string_view name,
                __itt_id taskid, __itt_id parentid)
         : m_domain(domain)
         , m_taskid(taskid)
@@ -71,24 +53,6 @@ public:
     }
 
     ScopedTask(const __itt_domain* domain, std::wstring_view name,
-               bool overlapped, __itt_id parentid = detail::get_null_id())
-        : m_domain(domain)
-        , m_taskid(overlapped ? detail::gen_id() : detail::get_null_id())
-        , m_overlapped(overlapped)
-        , m_active(true)
-    {
-        __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        if (m_overlapped)
-        {
-            __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
-        }
-        else
-        {
-            __itt_task_begin(m_domain, detail::get_null_id(), detail::get_null_id(), h);
-        }
-    }
-
-    ScopedTask(const __itt_domain* domain, std::wstring_view name,
                __itt_id taskid, __itt_id parentid)
         : m_domain(domain)
         , m_taskid(taskid)
@@ -107,23 +71,6 @@ public:
         , m_active(true)
     {
         __itt_task_begin(m_domain, detail::get_null_id(), detail::get_null_id(), name.get());
-    }
-
-    ScopedTask(const __itt_domain* domain, const StringHandle& name,
-               bool overlapped, __itt_id parentid = detail::get_null_id()) noexcept
-        : m_domain(domain)
-        , m_taskid(overlapped ? detail::gen_id() : detail::get_null_id())
-        , m_overlapped(overlapped)
-        , m_active(true)
-    {
-        if (m_overlapped)
-        {
-            __itt_task_begin_overlapped(m_domain, m_taskid, parentid, name.get());
-        }
-        else
-        {
-            __itt_task_begin(m_domain, detail::get_null_id(), detail::get_null_id(), name.get());
-        }
     }
 
     ScopedTask(const __itt_domain* domain, const StringHandle& name,

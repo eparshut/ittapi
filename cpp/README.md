@@ -161,7 +161,7 @@ d.task_end(id);                              // manual task end by ID
 
 #### `ittapi::ScopedTask`
 
-RAII wrapper for task begin/end. Pass `true` as the second argument to create an overlapped task (tasks that can end in any order). The `id()` method returns the task's auto-generated `__itt_id`.
+RAII wrapper for task begin/end. Use `domain.overlapped_task()` to create an overlapped task (tasks that can end in any order). The `id()` method returns the task's auto-generated `__itt_id`.
 
 ```cpp
 // Simple task
@@ -172,12 +172,12 @@ RAII wrapper for task begin/end. Pass `true` as the second argument to create an
 }                   // destructor ends task if still active
 ```
 
-Overlapped tasks — pass `true` to enable, optionally pass a parent ID:
+Overlapped tasks — use `overlapped_task()`, optionally pass a parent ID:
 
 ```cpp
 {
-    auto parent = domain.task("parent", true);               // overlapped, no parent
-    auto child  = domain.task("child", true, parent.id());   // overlapped, child of parent
+    auto parent = domain.overlapped_task("parent");               // overlapped, no parent
+    auto child  = domain.overlapped_task("child", parent.id());   // overlapped, child of parent
 
     parent.end();  // end parent task while child is still running
     child.end();   // child task ends

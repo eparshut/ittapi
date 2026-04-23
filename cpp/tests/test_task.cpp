@@ -144,7 +144,7 @@ static void test_overlapped_manual_interleaved()
 static void test_overlapped_auto_id()
 {
     ittapi::Domain d{"test.task.auto_id"};
-    auto task = d.task("work", true);
+    auto task = d.overlapped_task("work");
     CHECK(task.active());
     __itt_id tid = task.id();
     CHECK(tid.d2 != 0);
@@ -153,8 +153,8 @@ static void test_overlapped_auto_id()
 static void test_overlapped_auto_id_parent_child()
 {
     ittapi::Domain d{"test.task.auto_parent_child"};
-    auto parent = d.task("parent", true);
-    auto child = d.task("child", true, parent.id());
+    auto parent = d.overlapped_task("parent");
+    auto child = d.overlapped_task("child", parent.id());
 
     CHECK(parent.active());
     CHECK(child.active());

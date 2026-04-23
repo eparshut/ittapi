@@ -64,10 +64,10 @@ public:
         return ScopedTask(m_domain, name);
     }
 
-    [[nodiscard]] ScopedTask task(std::string_view name,
-                                  bool overlapped, __itt_id parentid = detail::get_null_id()) const
+    [[nodiscard]] ScopedTask overlapped_task(std::string_view name,
+                                             __itt_id parentid = detail::get_null_id()) const
     {
-        return ScopedTask(m_domain, name, overlapped, parentid);
+        return ScopedTask(m_domain, name, detail::gen_id(), parentid);
     }
 
     [[nodiscard]] ScopedTask task(std::string_view name, __itt_id taskid, __itt_id parentid) const
@@ -81,10 +81,10 @@ public:
         return ScopedTask(m_domain, name);
     }
 
-    [[nodiscard]] ScopedTask task(std::wstring_view name,
-                                  bool overlapped, __itt_id parentid = detail::get_null_id()) const
+    [[nodiscard]] ScopedTask overlapped_task(std::wstring_view name,
+                                             __itt_id parentid = detail::get_null_id()) const
     {
-        return ScopedTask(m_domain, name, overlapped, parentid);
+        return ScopedTask(m_domain, name, detail::gen_id(), parentid);
     }
 
     [[nodiscard]] ScopedTask task(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
@@ -98,10 +98,10 @@ public:
         return ScopedTask(m_domain, name);
     }
 
-    [[nodiscard]] ScopedTask task(const StringHandle& name,
-                                  bool overlapped, __itt_id parentid = detail::get_null_id()) const noexcept
+    [[nodiscard]] ScopedTask overlapped_task(const StringHandle& name,
+                                             __itt_id parentid = detail::get_null_id()) const noexcept
     {
-        return ScopedTask(m_domain, name, overlapped, parentid);
+        return ScopedTask(m_domain, name, detail::gen_id(), parentid);
     }
 
     [[nodiscard]] ScopedTask task(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept

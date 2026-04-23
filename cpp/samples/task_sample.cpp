@@ -45,12 +45,12 @@ int main()
         task.end();  // end early, destructor is a no-op
     }
 
-    // Overlapped tasks with IDs — parent and child can end in any order
+    // Overlapped tasks — parent and child can end in any order
     {
-        auto parent = domain.task("parent_task", true);
+        auto parent = domain.overlapped_task("parent_task");
         simulate_work(5);
 
-        auto child = domain.task("child_task", true, parent.id());
+        auto child = domain.overlapped_task("child_task", parent.id());
         simulate_work(5);
 
         parent.end();   // end parent while child is still running
