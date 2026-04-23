@@ -18,7 +18,7 @@ class ScopedFrame
 public:
     explicit ScopedFrame(const __itt_domain* domain) noexcept
         : m_domain(domain)
-        , m_id(detail::make_null_id())
+        , m_id(detail::get_null_id())
         , m_active(true)
     {
         __itt_frame_begin_v3(m_domain, &m_id);
@@ -57,7 +57,7 @@ public:
 
     static void submit(const __itt_domain* domain, __itt_timestamp begin, __itt_timestamp end) noexcept
     {
-        __itt_id id = detail::make_null_id();
+        __itt_id id = detail::get_null_id();
         __itt_frame_submit_v3(domain, &id, begin, end);
     }
 

@@ -22,11 +22,11 @@ class ScopedRegion
 public:
     ScopedRegion(const __itt_domain* domain, std::string_view name)
         : m_domain(domain)
-        , m_id(detail::make_null_id())
+        , m_id(detail::get_null_id())
         , m_active(true)
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_region_begin(m_domain, m_id, detail::make_null_id(), h);
+        __itt_region_begin(m_domain, m_id, detail::get_null_id(), h);
     }
 
     ScopedRegion(const __itt_domain* domain, std::string_view name,
@@ -42,11 +42,11 @@ public:
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
     ScopedRegion(const __itt_domain* domain, std::wstring_view name)
         : m_domain(domain)
-        , m_id(detail::make_null_id())
+        , m_id(detail::get_null_id())
         , m_active(true)
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_region_begin(m_domain, m_id, detail::make_null_id(), h);
+        __itt_region_begin(m_domain, m_id, detail::get_null_id(), h);
     }
 
     ScopedRegion(const __itt_domain* domain, std::wstring_view name,
@@ -62,10 +62,10 @@ public:
 
     ScopedRegion(const __itt_domain* domain, const StringHandle& name) noexcept
         : m_domain(domain)
-        , m_id(detail::make_null_id())
+        , m_id(detail::get_null_id())
         , m_active(true)
     {
-        __itt_region_begin(m_domain, m_id, detail::make_null_id(), name.get());
+        __itt_region_begin(m_domain, m_id, detail::get_null_id(), name.get());
     }
 
     ScopedRegion(const __itt_domain* domain, const StringHandle& name,

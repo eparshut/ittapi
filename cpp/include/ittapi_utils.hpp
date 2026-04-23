@@ -8,6 +8,7 @@
 
 #include <ittnotify.h>
 
+#include <atomic>
 #include <string_view>
 #include <unordered_map>
 
@@ -94,10 +95,16 @@ inline void thread_set_name(const wchar_t* name) noexcept
 
 #endif  // ITT_PLATFORM == ITT_PLATFORM_WIN
 
-inline __itt_id make_null_id() noexcept
+inline __itt_id get_null_id() noexcept
 {
     __itt_id id = __itt_null;
     return id;
+}
+
+inline __itt_id gen_id() noexcept
+{
+    static std::atomic<unsigned long long> counter{1};
+    return __itt_id_make(nullptr, counter.fetch_add(1, std::memory_order_relaxed));
 }
 
 }  // namespace detail

@@ -64,6 +64,12 @@ public:
         return ScopedTask(m_domain, name);
     }
 
+    [[nodiscard]] ScopedTask task(std::string_view name,
+                                  bool overlapped, __itt_id parentid = detail::get_null_id()) const
+    {
+        return ScopedTask(m_domain, name, overlapped, parentid);
+    }
+
     [[nodiscard]] ScopedTask task(std::string_view name, __itt_id taskid, __itt_id parentid) const
     {
         return ScopedTask(m_domain, name, taskid, parentid);
@@ -73,6 +79,12 @@ public:
     [[nodiscard]] ScopedTask task(std::wstring_view name) const
     {
         return ScopedTask(m_domain, name);
+    }
+
+    [[nodiscard]] ScopedTask task(std::wstring_view name,
+                                  bool overlapped, __itt_id parentid = detail::get_null_id()) const
+    {
+        return ScopedTask(m_domain, name, overlapped, parentid);
     }
 
     [[nodiscard]] ScopedTask task(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
@@ -86,6 +98,12 @@ public:
         return ScopedTask(m_domain, name);
     }
 
+    [[nodiscard]] ScopedTask task(const StringHandle& name,
+                                  bool overlapped, __itt_id parentid = detail::get_null_id()) const noexcept
+    {
+        return ScopedTask(m_domain, name, overlapped, parentid);
+    }
+
     [[nodiscard]] ScopedTask task(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept
     {
         return ScopedTask(m_domain, name, taskid, parentid);
@@ -94,7 +112,7 @@ public:
     void task_begin(std::string_view name) const
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), h);
+        __itt_task_begin(m_domain, detail::get_null_id(), detail::get_null_id(), h);
     }
 
     void task_begin(std::string_view name, __itt_id taskid, __itt_id parentid) const
@@ -107,7 +125,7 @@ public:
     void task_begin(std::wstring_view name) const
     {
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), h);
+        __itt_task_begin(m_domain, detail::get_null_id(), detail::get_null_id(), h);
     }
 
     void task_begin(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
@@ -119,7 +137,7 @@ public:
 
     void task_begin(const StringHandle& name) const noexcept
     {
-        __itt_task_begin(m_domain, detail::make_null_id(), detail::make_null_id(), name.get());
+        __itt_task_begin(m_domain, detail::get_null_id(), detail::get_null_id(), name.get());
     }
 
     void task_begin(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept

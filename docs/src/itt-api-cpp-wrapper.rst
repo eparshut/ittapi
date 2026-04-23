@@ -203,8 +203,9 @@ Lightweight wrapper around ``__itt_domain*`` with convenience factories.
 ittapi::ScopedTask
 """"""""""""""""""
 
-RAII wrapper for task begin/end. Without IDs, uses simple stack-based task API.
-With IDs, uses overlapped task API (tasks can end in any order).
+RAII wrapper for task begin/end. Pass ``true`` as the second argument to create
+an overlapped task (tasks that can end in any order). The ``id()`` method returns
+the task's auto-generated ``__itt_id``.
 
 .. code-block:: cpp
 
@@ -215,7 +216,18 @@ With IDs, uses overlapped task API (tasks can end in any order).
        task.end();     // optional early end (idempotent)
    }                   // destructor ends task if still active
 
-Overlapped tasks with IDs — safe to end in any order:
+Overlapped tasks — pass ``true`` to enable, optionally pass a parent ID:
+
+.. code-block:: cpp
+
+   {
+       auto parent = domain.task("parent", true);                // overlapped, no parent
+       auto child  = domain.task("child", true, parent.id());   // overlapped, child of parent
+
+       parent.end();  // end parent while child is still running
+   }                  // child ends here via destructor
+
+Overlapped tasks with explicit IDs (advanced):
 
 .. code-block:: cpp
 
