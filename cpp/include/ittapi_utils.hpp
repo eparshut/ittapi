@@ -8,7 +8,6 @@
 
 #include <ittnotify.h>
 
-#include <atomic>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -102,23 +101,9 @@ inline __itt_id get_null_id() noexcept
     return id;
 }
 
-inline __itt_id gen_id() noexcept
+inline bool is_null_id(const __itt_id& id) noexcept
 {
-    static std::atomic<unsigned long long> counter{1};
-    return __itt_id_make(nullptr, counter.fetch_add(1, std::memory_order_relaxed));
-}
-
-inline __itt_id get_or_create_task_id(__itt_string_handle* h) noexcept
-{
-    thread_local std::unordered_map<__itt_string_handle*, __itt_id> cache;
-    auto it = cache.find(h);
-    if (it != cache.end())
-    {
-        return it->second;
-    }
-    __itt_id id = gen_id();
-    cache.emplace(h, id);
-    return id;
+    return id.d1 == 0 && id.d2 == 0 && id.d3 == 0;
 }
 
 }  // namespace detail

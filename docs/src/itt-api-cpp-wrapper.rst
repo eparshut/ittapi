@@ -204,9 +204,9 @@ ittapi::ScopedTask
 """"""""""""""""""
 
 RAII wrapper for task begin/end. Use ``domain.overlapped_task()`` to create
-an overlapped task (tasks that can end in any order). Overlapped tasks with the
-same name on the same thread share a single ``__itt_id``, generated automatically
-on first use. The ``id()`` method returns this ID.
+an overlapped task (tasks that can end in any order). Each overlapped task
+instance gets a unique ``__itt_id`` derived from its object address. The
+``id()`` method returns this ID.
 
 .. code-block:: cpp
 

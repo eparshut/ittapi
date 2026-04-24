@@ -31,24 +31,25 @@ public:
     }
 
     ScopedTask(const __itt_domain* domain, std::string_view name,
-               __itt_id taskid, __itt_id parentid)
+               __itt_id taskid, __itt_id parentid, bool overlapped = false)
         : m_domain(domain)
         , m_taskid(taskid)
-        , m_overlapped(true)
+        , m_overlapped(overlapped)
         , m_active(true)
     {
+        if (m_overlapped && detail::is_null_id(m_taskid))
+        {
+            m_taskid = __itt_id_make(this, 0);
+        }
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
-    }
-
-    ScopedTask(const __itt_domain* domain, __itt_string_handle* name,
-               __itt_id taskid, __itt_id parentid) noexcept
-        : m_domain(domain)
-        , m_taskid(taskid)
-        , m_overlapped(true)
-        , m_active(true)
-    {
-        __itt_task_begin_overlapped(m_domain, m_taskid, parentid, name);
+        if (m_overlapped)
+        {
+            __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
+        }
+        else
+        {
+            __itt_task_begin(m_domain, m_taskid, parentid, h);
+        }
     }
 
 #if ITT_PLATFORM == ITT_PLATFORM_WIN
@@ -63,14 +64,25 @@ public:
     }
 
     ScopedTask(const __itt_domain* domain, std::wstring_view name,
-               __itt_id taskid, __itt_id parentid)
+               __itt_id taskid, __itt_id parentid, bool overlapped = false)
         : m_domain(domain)
         , m_taskid(taskid)
-        , m_overlapped(true)
+        , m_overlapped(overlapped)
         , m_active(true)
     {
+        if (m_overlapped && detail::is_null_id(m_taskid))
+        {
+            m_taskid = __itt_id_make(this, 0);
+        }
         __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
+        if (m_overlapped)
+        {
+            __itt_task_begin_overlapped(m_domain, m_taskid, parentid, h);
+        }
+        else
+        {
+            __itt_task_begin(m_domain, m_taskid, parentid, h);
+        }
     }
 #endif
 
@@ -84,13 +96,24 @@ public:
     }
 
     ScopedTask(const __itt_domain* domain, const StringHandle& name,
-               __itt_id taskid, __itt_id parentid) noexcept
+               __itt_id taskid, __itt_id parentid, bool overlapped = false) noexcept
         : m_domain(domain)
         , m_taskid(taskid)
-        , m_overlapped(true)
+        , m_overlapped(overlapped)
         , m_active(true)
     {
-        __itt_task_begin_overlapped(m_domain, m_taskid, parentid, name.get());
+        if (m_overlapped && detail::is_null_id(m_taskid))
+        {
+            m_taskid = __itt_id_make(this, 0);
+        }
+        if (m_overlapped)
+        {
+            __itt_task_begin_overlapped(m_domain, m_taskid, parentid, name.get());
+        }
+        else
+        {
+            __itt_task_begin(m_domain, m_taskid, parentid, name.get());
+        }
     }
 
     ScopedTask(const ScopedTask&) = delete;

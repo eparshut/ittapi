@@ -67,8 +67,13 @@ public:
     [[nodiscard]] ScopedTask overlapped_task(std::string_view name,
                                              __itt_id parentid = detail::get_null_id()) const
     {
-        __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        return ScopedTask(m_domain, h, detail::get_or_create_task_id(h), parentid);
+        return ScopedTask(m_domain, name, detail::get_null_id(), parentid, true);
+    }
+
+    [[nodiscard]] ScopedTask overlapped_task(std::string_view name,
+                                             __itt_id taskid, __itt_id parentid) const
+    {
+        return ScopedTask(m_domain, name, taskid, parentid, true);
     }
 
     [[nodiscard]] ScopedTask task(std::string_view name, __itt_id taskid, __itt_id parentid) const
@@ -85,8 +90,13 @@ public:
     [[nodiscard]] ScopedTask overlapped_task(std::wstring_view name,
                                              __itt_id parentid = detail::get_null_id()) const
     {
-        __itt_string_handle* h = detail::get_or_create_string_handle(name);
-        return ScopedTask(m_domain, h, detail::get_or_create_task_id(h), parentid);
+        return ScopedTask(m_domain, name, detail::get_null_id(), parentid, true);
+    }
+
+    [[nodiscard]] ScopedTask overlapped_task(std::wstring_view name,
+                                             __itt_id taskid, __itt_id parentid) const
+    {
+        return ScopedTask(m_domain, name, taskid, parentid, true);
     }
 
     [[nodiscard]] ScopedTask task(std::wstring_view name, __itt_id taskid, __itt_id parentid) const
@@ -103,8 +113,13 @@ public:
     [[nodiscard]] ScopedTask overlapped_task(const StringHandle& name,
                                              __itt_id parentid = detail::get_null_id()) const noexcept
     {
-        __itt_string_handle* h = name.get();
-        return ScopedTask(m_domain, h, detail::get_or_create_task_id(h), parentid);
+        return ScopedTask(m_domain, name, detail::get_null_id(), parentid, true);
+    }
+
+    [[nodiscard]] ScopedTask overlapped_task(const StringHandle& name,
+                                             __itt_id taskid, __itt_id parentid) const noexcept
+    {
+        return ScopedTask(m_domain, name, taskid, parentid, true);
     }
 
     [[nodiscard]] ScopedTask task(const StringHandle& name, __itt_id taskid, __itt_id parentid) const noexcept
