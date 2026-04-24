@@ -26,6 +26,7 @@ project(ittapi)
 option(FORCE_32 "Force a 32-bit compile on 64-bit" OFF)
 option(ITT_API_IPT_SUPPORT "ptmarks support" OFF)
 option(ITT_API_FORTRAN_SUPPORT "fortran support" OFF)
+option(ITT_API_CPP_SUPPORT "C++ wrapper support" OFF)
 option(ITT_API_INSTALL "Enable ITT API installation rules" ON)
 
 if(FORCE_32 AND UNIX)
@@ -171,6 +172,11 @@ target_include_directories(jitprofiling
     PRIVATE src/ittnotify
 )
 
+# C++ wrapper
+if(ITT_API_CPP_SUPPORT)
+    add_subdirectory(cpp)
+endif()
+
 # install
 
 include(CMakePackageConfigHelpers)
@@ -178,6 +184,11 @@ include(GNUInstallDirs)
 
 if(ITT_API_INSTALL)
     install(TARGETS ittnotify EXPORT ittapi-targets INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    if(ITT_API_CPP_SUPPORT)
+        install(TARGETS ittapi-cpp EXPORT ittapi-targets)
+        install(DIRECTORY cpp/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "*.hpp")
+    endif()
     install(EXPORT ittapi-targets NAMESPACE ittapi:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ittapi)
     install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
         FILES_MATCHING PATTERN "*.h"

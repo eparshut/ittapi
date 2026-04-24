@@ -12,7 +12,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'ITT/JIT APIs Documentation'
-copyright = '2025 Intel Corporation'
+copyright = '2026 Intel Corporation'
 author = 'Intel Corporation'
 
 # -- General configuration ---------------------------------------------------

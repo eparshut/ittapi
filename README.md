@@ -41,7 +41,7 @@ To build the library:
 - To list available build options execute: `python buildall.py -h`
 
 ```
-usage: buildall.py [-h] [-d] [-c] [-v] [-pt] [-ft] [--force_bits]
+usage: buildall.py [-h] [-d] [-c] [-v] [-pt] [-ft] [-cpp] [--force_bits]
 
 optional arguments:
   -h, --help      show this help message and exit
@@ -50,6 +50,7 @@ optional arguments:
   -v, --verbose   enable verbose output from build process
   -pt, --ptmark   enable anomaly detection support
   -ft, --fortran  enable fortran support
+  -cpp, --cpp     enable C++ wrapper support
   --force_bits    specify bit version for the target
   --vs            specify visual studio version (Windows only)
   --cmake_gen     specify cmake build generator (Windows only)
